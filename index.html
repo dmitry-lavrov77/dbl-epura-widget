@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dev: Embedded React + RTK</title>
+</head>
+<body>
+  <!-- <h1>Development – Multiple Widget Instances</h1> -->
+
+  <div id="widget1" style="width:100vw; height:100vh;"></div>
+  <!-- <div id="widget2"></div> -->
+  <!-- <div class="widget-group"></div> -->
+  <!-- <div class="widget-group"></div> -->
+
+  <!-- Load the embed script as a module (dev) -->
+  <script type="module" src="/src/embed.jsx"></script>
+
+  <!-- Call the global init function (identical to production) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      EpuraWidget.init('#widget1', { baseUrl: 'https://31.44.94.234:63123/BratskGES' });
+    });
+  </script>
+</body>
+</html>
