@@ -10,6 +10,47 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
     throw new Error('Base URL not configured. Did you set it in init()?');
   }
 
+
+
+  if (args.indexOf('bngplotsets.sql')===0) {
+
+    if (state.config.plotsets) return {data:state.config.plotsets};
+    
+  }
+
+  if (args.indexOf('bngplotlists.sql')===0) {
+
+    if (state.config.plotlists) return {data:state.config.plotlists};
+    
+  }
+
+
+  if (args.indexOf('bngplotlines.sql')===0) {
+
+    if (state.config.plotlines) return {data:state.config.plotlines};
+    
+  }
+
+  if (args.indexOf('bngplotdiagrams.sql')===0) {
+
+    if (state.config.plotdiagrams) return {data:state.config.plotdiagrams};
+    
+  }
+
+  if (args.indexOf('PlotData.sql')===0) {
+
+    if (state.config.plotdata) return {data:state.config.plotdata};
+    
+  }
+
+ if (args.indexOf('CalcPlotTable.sql')===0) {
+
+    if (state.config.plottable) return {data:state.config.plottable};
+    
+  }
+
+
+
   // Use the baseUrl from state for every request
   return fetchBaseQuery({ baseUrl })(args, api, extraOptions);
 };

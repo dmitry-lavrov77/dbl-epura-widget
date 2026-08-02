@@ -5,7 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import EpuraWidget from './EpuraWidget';
 import sheetReducer from './sheetSlice';
 import contextReducer from './contextSlice';
-import layoutReducer from './layoutSlice';
+import layoutReducer, {initialState as layoutInitialState} from './layoutSlice';
 import {apiSlice} from './apiSlice'
 import configReducer from './configSlice';
 
@@ -26,15 +26,22 @@ export function init(container, props = {}) {
   }
 
 
+/* EpuraWidget.init('#widget1', { baseUrl: 'https://31.44.94.234:63123/BratskGES', mode:'view', plot_no:142, plotsets:plotsets, 
+        plotlists:plotlists, plotdiagrams:plotdiagrams, plotlines:plotlines, plotdata:plotdata, plottable:plottable});
+     */
+
   const baseUrl = props.baseUrl ?? '';
   
   const store = configureStore({
     reducer: { sheet: sheetReducer, cmenu:contextReducer, layout:layoutReducer,  config:configReducer, [apiSlice.reducerPath]: apiSlice.reducer,},
     preloadedState: {
 
-      config:{baseUrl}
+      config:{baseUrl:baseUrl, generated:(!props.mode||props.mode==='edit')?false:true, plotsets:props.plotsets ?? null, plotlists:props.plotlists ?? null, 
+
+        plotdiagrams:props.plotdiagrams ?? null, plotlines:props.plotlines ?? null, plotdata:props.plotdata ?? null, plottable:props.plottable ?? null,
+      },
+      layout:{...layoutInitialState, dates_selected:(!props.mode||props.mode==='edit')?[]:['generated'],layout_mode:props.mode ?? 'edit', selected_epura:{plot_no:props.plot_no ?? -1}},
       
-    //   sheet: { value: props.initialCount ?? 0 },
     },
      middleware: (getDefaultMiddleware) =>
 

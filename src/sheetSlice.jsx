@@ -1734,12 +1734,16 @@ const sheetSlice = createSlice({
       
           if (min_y ==='first') min_y = 0;
 
-          let rrr =  rr[i].table_data[s.table_selected.toString()+'_'+(parseFloat(x)+min_x-parseFloat(shift_x)).toString()+'_'+(parseFloat(y)+min_y+1-parseFloat(shift_y)).toString()]
+          if (shift_x!==0) shift_x = min_x-parseFloat(shift_x);
+          if (shift_y!==0) shift_y = min_y-parseFloat(shift_y)+1;
+          
+
+          let rrr =  rr[i].table_data[s.table_selected.toString()+'_'+(parseFloat(x)+shift_x).toString()+'_'+(parseFloat(y)+shift_y).toString()]
 
 
           if (s.table_pres.toString().trim()!=='') {
            
-            if (rrr&&rrr.toString().trim()!=='') rrr=parseFloat(rrr).toFixed(parseFloat(s.table_pres)).toString();
+            if (rrr&&rrr.toString().trim()!==''&&isNumeric(rrr.toString())) rrr=parseFloat(rrr).toFixed(parseFloat(s.table_pres)).toString();
           }
           return rrr
 

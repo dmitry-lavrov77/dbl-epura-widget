@@ -9,7 +9,8 @@ import {get_cells_keys, get_columns_keys, get_rows_keys} from './consts'
 import {useSaveEpuraMutation} from './apiSlice'
 import { ExcelMaker } from './excel-maker';
 import { TOTAL_COLS } from './consts';
-import { getColumnIndex } from './formula';
+import { getColumnIndex,isNumeric } from './formula';
+//import {} from 
 
 
 
@@ -180,7 +181,7 @@ export const StatusBar = () => {
     
     let tmpl = structuredClone(store.getState()).sheet;
 
-    //console.log('TMPL', tmpl)
+   
 
 
     let emaker = new ExcelMaker();
@@ -191,22 +192,27 @@ export const StatusBar = () => {
 
      }
 
-    
+    let diags = [];
 
-     let sheet_idx = 0;
+    let pics = [];  
+
+    for (let shh=0;shh<tmpl.sheets.length;shh++) {
+
+   // if (shh!==0) continue;
+
+     let sheet_idx = tmpl.sheets[shh].sheet;
 
 
-    // let current_rows = [];
-
+  
     
 
      let sheet = {
 
-      title:tmpl.sheets[0].title,
+      title:tmpl.sheets[shh].title,
 
-      table_pos:tmpl.sheets[0].table_pos,
+      table_pos:tmpl.sheets[shh].table_pos,
 
-      table_pres:tmpl.sheets[0].table_pres,
+      table_pres:tmpl.sheets[shh].table_pres,
       
       selected:true,
       
@@ -218,8 +224,12 @@ export const StatusBar = () => {
 
     }
 
-    //console.log('???????????????', sheet)
 
+   
+
+
+
+   
     let diags_tmp = Object.values(tmpl.diags).filter(o=>o.sheet===sheet_idx).sort((a,b)=>a.idx-b.idx);
 
     let pics_tmp = Object.values(tmpl.pics).filter(o=>o.sheet===sheet_idx).sort((a,b)=>a.idx-b.idx);
@@ -241,9 +251,7 @@ export const StatusBar = () => {
  
 
 
-    let diags = [];
-
-    let pics = [];
+   
     
     for (let ii=0;ii<=mxx;ii++) {
 
@@ -672,7 +680,7 @@ export const StatusBar = () => {
 
        //    for (let vv=0;vv<sheet.rows.length; vv++) {
 
-       //      console.log('?????????????????????????????????')
+      
 
        //    } 
 
@@ -691,9 +699,28 @@ export const StatusBar = () => {
 
      excel_object.sheets.push(sheet)
 
-     //console.log('SHEET', sheet)
+
+  }
+
+     //excel_object.sheets.push(sheet2)
         
+    
+    
+    
+    console.log('!!!!!!!!!!!!', diags)
+    
+    
      await emaker.load(excel_object);
+
+
+    
+
+
+   for (let shh=0;shh<tmpl.sheets.length;shh++) {
+
+    //if (shh!==0) continue;
+
+    let sheet_idx = tmpl.sheets[shh].sheet;
 
 
       let cells = [];
@@ -715,21 +742,40 @@ export const StatusBar = () => {
         let multicells = [];
 
 
-       let tcells = {};
+        let tcells = {};
        
        if (diags.length) {
+
+          
     
             
 
           for (let i=0;i<diags.length;i++) {
 
+          // if (diags[i].sheet!==tmpl.sheets[shh].sheet) continue;
+         
            let dg = diags[i];
            
            if (!dg.table_data) continue;
 
-           let td = Object.entries(dg.table_data)
+           //console.log('shshshsgh')
 
-           
+           //if (tmpl.sheets[shh].table_selected!==dg.data.diag_no) continue;
+
+           let td0 = Object.entries(dg.table_data)
+
+           let td = [];
+
+           for (let rr =0; rr<td0.length;rr++){
+              
+               let yy = td0[rr][0].split('_');
+
+               if (!yy.length||yy[0]!==tmpl.sheets[shh].table_selected.toString()) continue;
+
+               td.push(td0[rr]);
+
+
+           }
 
            if (!td.length) continue;
 
@@ -749,6 +795,7 @@ export const StatusBar = () => {
            for (let j =0; j<td.length;j++) {
 
              if (!td[j][1]) continue;
+              
              
              let tmp = td[j][0].split('_');
 
@@ -756,7 +803,7 @@ export const StatusBar = () => {
 
              let shift_y=0;
 
-             let pos = sheet.table_pos.split('$')
+             let pos = tmpl.sheets[shh].table_pos.split('$')  //sheet.table_pos.split('$')
 
              let good = true;
 
@@ -800,7 +847,18 @@ export const StatusBar = () => {
 
              }
 
-             tcells[(parseFloat(tmp[1])-min_x+shift_x).toString()+'_'+(parseFloat(tmp[2])-min_y+shift_y-1).toString()] = td[j][1];
+             if (shift_x!==0) shift_x = min_x-parseFloat(shift_x);
+            if (shift_y!==0) shift_y = min_y-parseFloat(shift_y)+1;
+
+            let rrr =  td[j][1];
+
+            if (tmpl.sheets[shh].table_pres.toString().trim()!=='') {
+                        
+             if (rrr&&rrr.toString().trim()!==''&&isNumeric(rrr.toString())) rrr=parseFloat(rrr).toFixed(parseFloat(tmpl.sheets[shh].table_pres)).toString();
+            }
+             
+
+             tcells[sheets[shh].sheet.toString()+'_'+(parseFloat(tmp[1])+shift_x).toString()+'_'+(parseFloat(tmp[2])+shift_y).toString()] = rrr;
 
 
            }
@@ -810,14 +868,16 @@ export const StatusBar = () => {
 
 
           }
-          //console.log('PPPPPPPPP', diags)
+          
 
        }
 
-     
-       //console.log('NNNNNNNNNNNNNN', tcells)
+       console.log('??????', tmpl)
+      
   
        let tcc = Object.values(tmpl.tcells).filter(o=>o.sheet === sheet_idx).sort((a,b) => (a.y-b.y)||(a.x-b.x));
+
+     
       
        for (let kk=0;kk<tcc.length;kk++) {
 
@@ -825,8 +885,15 @@ export const StatusBar = () => {
 
            let val = (cell.is_calculated)?cell.calculated_value:cell.value
 
-           if (tcells[cell.x.toString()+'_'+cell.y.toString()]) val = tcells[cell.x.toString()+'_'+cell.y.toString()]; 
+           if (tcells[sheet_idx.toString()+'_'+cell.x.toString()+'_'+cell.y.toString()]) {
+            
+            console.log('val!!!!!!!!!!!!')
 
+            cell.value = tcells[sheet_idx.toString()+'_'+cell.x.toString()+'_'+cell.y.toString()]; 
+
+            val = cell.value
+
+           } 
            if (cell.value.toString().trim()===''/*&&cell.table_value.toString().trim()===''*/) {
                 
             if (!cell.extra_border||cell.extra_border==='none'||cell.extra_border==='false') continue;
@@ -877,12 +944,13 @@ export const StatusBar = () => {
 
     }
 
+    
   
 
-    if (cells.length) emaker.add_strings(1, cells, txts, colors, fonts, bgcolors, styles, borders, alignments, valignments);
+    if (cells.length) emaker.add_strings(shh+1, cells, txts, colors, fonts, bgcolors, styles, borders, alignments, valignments);
    
-     //return;
-  
+    
+   }
   
      emaker.fix_rows()
 

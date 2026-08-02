@@ -47,9 +47,9 @@ export const ContextMenu = ({x, y, tpe, arg = null}) => {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      console.log('here', menuRef.current, e.target, menuRef.current.contains(e.target))
+     
       if (menuRef.current && !menuRef.current.contains(e.target)) {
-        console.log('here2')
+       
         onClose();
       }
     };

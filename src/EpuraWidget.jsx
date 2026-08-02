@@ -27,7 +27,7 @@ const EpuraListItem = ({plot_name, plot_no, select_epura}) =>{
 
   return (
 
-    <div onClick={()=> select_epura(plot_no)  } className={`${(selected.plot_no === plot_no)?'elist-item-selected':'elist-item'}`}>{plot_name}</div>
+    <div onClick={()=> select_epura(plot_no)  } className={`${(selected&&selected.plot_no === plot_no)?'elist-item-selected':'elist-item'}`}>{plot_name}</div>
 
 
   )
@@ -98,7 +98,7 @@ const DateList = () =>{
 
    //const dates_selected = useSelector(state=>state.layout.dates_selected)
 
-   const dates = useGetEpuraDatesQuery(selected.plot_no)
+   const dates = useGetEpuraDatesQuery((selected)?selected.plot_no:null)
 
   // const limit_on = (selected.plot_qnt_date === dates_selected.length)
 
@@ -143,13 +143,45 @@ const DatesSelected = ()=>{
    return (
 
 
-    <div>Доступные даты (макс. кол-во - {selected.plot_qnt_date}): {dates_selected.length}</div>
+    <div>Доступные даты (макс. кол-во - {(selected)?selected.plot_qnt_date:0}): {(dates_selected)?dates_selected.length:0}</div>
 
 
    )
 
 
 }
+
+const SilentPane = () =>{
+
+   const dispatch = useDispatch();
+
+  const selected = useSelector(state=>state.layout.selected_epura);
+
+  const template = useGetEpuraTemplateQuery((selected)?selected.plot_no:null)
+
+  const plot_set = useGetPlotListQuery();
+
+  console.log('???????????????TEMPLATE', template)
+
+   useEffect(()=>{
+
+   if (template.data&&plot_set.data) {
+
+    const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
+
+   
+      
+    dispatch(load_template({template:template.data, the_list:the_list}));
+
+  }  }, [template, plot_set])
+  
+  
+
+  return <></>
+
+}
+
+
 
 const RightPane = () =>{
 
@@ -158,17 +190,19 @@ const RightPane = () =>{
 
   const selected = useSelector(state=>state.layout.selected_epura)
 
+  //console.log('SELECTED', selected)
+
   
   const dispatch = useDispatch();
 
 
-  const template = useGetEpuraTemplateQuery(selected.plot_no)
+  const template = useGetEpuraTemplateQuery((selected)?selected.plot_no:null)
+
+
 
   const plot_set = useGetPlotListQuery();
 
-  
-  //  the_list.unshift({plist_name:'не задана', plist_no:-1}) 
-
+ 
 
 
 
@@ -452,7 +486,7 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
   
   const [scaffolded, SetScaffolded] = useState(false)  
 
-  const [mode_set, SetMode] = useState(false) 
+  const [mode_set, SetMode] = useState(true) 
 
   const layout_mode = useSelector(state=>state.layout.layout_mode)
   
@@ -460,6 +494,7 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
   const  [scaffold, { isLoading: isUpdating } ]  = useScaffoldEpuraTableMutation();
 
+  const generated = useSelector(state=>state.config.generated)
   
 
   useEffect(()=>{
@@ -467,29 +502,34 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
     const do_scaffold = async () =>{
 
+      
+
        await scaffold();
 
        SetScaffolded(true)
 
     }
 
+    
 
-    if (mode==='edit') do_scaffold();
+    if (layout_mode==='edit'||generated) do_scaffold();
 
-    dispatch(set_layout_mode(mode));
+    //dispatch(set_layout_mode(mode));
 
-    SetMode(true);
-
-
-  },[])
+    //SetMode(true);
 
 
+  },[generated])
+
+  console.log('layout_mode', layout_mode)
+
+  //const generated = useSelector(state=>state.config.generated)
 
   return (
      (mode_set&&layout_mode!=='')? 
       <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'row'}}>
 
-        {(layout_mode==='edit')&&<RightPane></RightPane>}
+        {(layout_mode==='edit')?<RightPane></RightPane>:(generated)?<SilentPane></SilentPane>:null}
         
       {(layout_mode==='edit')&&<Divider pos={'left'}></Divider>}
     

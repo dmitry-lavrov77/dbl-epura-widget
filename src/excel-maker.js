@@ -949,7 +949,6 @@ export class ExcelMaker {
     label = String.fromCharCode(65 + (num % 26)) + label;
     num = Math.floor(num / 26) - 1;
   }
-  console.log(index, label)
   return label;
 
 
@@ -1167,13 +1166,13 @@ excelColumnNameToNumber(columnName) {
    add_strings (sheet_no, cells, strs, colors=[], fonts=[], bgcolors=[], styles=[], borders=[], alignments=[], valignments=[]) {
 
 
-
+      console.log('!!!!!!!!!!!!', sheet_no)
      
 
       //let styles = this.styles.node;
       // _fills = this.styles.node.querySelector("fills");
 
-
+     //if (sheet_no!==1) return;
 
 
       let sst = this.shared_strings.node.querySelector("sst");
@@ -1999,7 +1998,7 @@ excelColumnNameToNumber(columnName) {
 
  
 
-        this.add_strings(0,ser_cells,diag.ser_names);
+        this.add_strings(0, ser_cells,diag.ser_names);
 
 
 

@@ -2,7 +2,7 @@ import { createSlice, current } from '@reduxjs/toolkit';
 
 
 
-const initialState = {
+export const initialState = {
   
   left:20,
 
