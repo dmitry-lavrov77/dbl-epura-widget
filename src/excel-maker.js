@@ -1166,7 +1166,7 @@ excelColumnNameToNumber(columnName) {
    add_strings (sheet_no, cells, strs, colors=[], fonts=[], bgcolors=[], styles=[], borders=[], alignments=[], valignments=[]) {
 
 
-      console.log('!!!!!!!!!!!!', sheet_no)
+     
      
 
       //let styles = this.styles.node;

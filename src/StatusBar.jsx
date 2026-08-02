@@ -707,7 +707,7 @@ export const StatusBar = () => {
     
     
     
-    console.log('!!!!!!!!!!!!', diags)
+    
     
     
      await emaker.load(excel_object);
@@ -758,7 +758,7 @@ export const StatusBar = () => {
            
            if (!dg.table_data) continue;
 
-           //console.log('shshshsgh')
+          
 
            //if (tmpl.sheets[shh].table_selected!==dg.data.diag_no) continue;
 
@@ -872,7 +872,7 @@ export const StatusBar = () => {
 
        }
 
-       console.log('??????', tmpl)
+       
       
   
        let tcc = Object.values(tmpl.tcells).filter(o=>o.sheet === sheet_idx).sort((a,b) => (a.y-b.y)||(a.x-b.x));
@@ -887,7 +887,7 @@ export const StatusBar = () => {
 
            if (tcells[sheet_idx.toString()+'_'+cell.x.toString()+'_'+cell.y.toString()]) {
             
-            console.log('val!!!!!!!!!!!!')
+          
 
             cell.value = tcells[sheet_idx.toString()+'_'+cell.x.toString()+'_'+cell.y.toString()]; 
 
@@ -1051,7 +1051,7 @@ export const StatusBar = () => {
 
    const active_sheet = useSelector(state=>state.sheet.selected_sheet) 
 
-
+   const generated = useSelector(state=>state.config.generated)
 
    const dispatch = useDispatch();
 
@@ -1079,7 +1079,9 @@ export const StatusBar = () => {
     <div className="status-right">
 
       {(layout_mode==='edit')&&<div onClick={()=>do_save()} title='Сохранить изменения' className="view-modes" style={{fontSize:'22px', cursor:'pointer'}}><FontAwesomeIcon icon={faFloppyDisk}/></div>}
-      <div onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'black'}`}}><FontAwesomeIcon icon={faBinoculars}/></div>
+      
+      
+      {!generated&&<div onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'black'}`}}><FontAwesomeIcon icon={faBinoculars}/></div>}
       
         <div onClick={()=>{do_save_excel()}} title='Выгрузить в Excel' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:'green'}}><FontAwesomeIcon icon={faFileExcel}/></div>
 

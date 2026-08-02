@@ -161,8 +161,7 @@ const SilentPane = () =>{
 
   const plot_set = useGetPlotListQuery();
 
-  console.log('???????????????TEMPLATE', template)
-
+  
    useEffect(()=>{
 
    if (template.data&&plot_set.data) {
@@ -190,7 +189,7 @@ const RightPane = () =>{
 
   const selected = useSelector(state=>state.layout.selected_epura)
 
-  //console.log('SELECTED', selected)
+  
 
   
   const dispatch = useDispatch();
@@ -521,7 +520,7 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
   },[generated])
 
-  console.log('layout_mode', layout_mode)
+  
 
   //const generated = useSelector(state=>state.config.generated)
 
