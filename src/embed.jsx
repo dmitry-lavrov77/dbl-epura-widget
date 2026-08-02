@@ -39,6 +39,9 @@ export function init(container, props = {}) {
       config:{baseUrl:baseUrl, generated:(!props.mode||props.mode==='edit')?false:true, plotsets:props.plotsets ?? null, plotlists:props.plotlists ?? null, 
 
         plotdiagrams:props.plotdiagrams ?? null, plotlines:props.plotlines ?? null, plotdata:props.plotdata ?? null, plottable:props.plottable ?? null,
+        
+        template:props.template ?? null
+      
       },
       layout:{...layoutInitialState, dates_selected:(!props.mode||props.mode==='edit')?[]:['generated'],layout_mode:props.mode ?? 'edit', selected_epura:{plot_no:props.plot_no ?? -1}},
       

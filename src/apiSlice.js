@@ -15,7 +15,7 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
   if (args.indexOf('bngplotsets.sql')===0) {
 
     if (state.config.plotsets) return {data:state.config.plotsets};
-    
+
   }
 
   if (args.indexOf('bngplotlists.sql')===0) {
@@ -47,6 +47,23 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
 
     if (state.config.plottable) return {data:state.config.plottable};
     
+  }
+
+
+  if (args.indexOf('createtemplateex.sql')===0) {
+
+    return {data:[]};
+    
+  }
+
+  if (args.indexOf('diagtemplateex.sql')===0) {
+
+
+    if (state.config.template) return {data:state.config.template}
+
+
+
+
   }
 
 
