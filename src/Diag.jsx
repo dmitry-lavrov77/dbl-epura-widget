@@ -216,11 +216,11 @@ export const Diag = ({sheet, idx}) =>{
 
     const load = async() =>{
 
-        
+       // let rr = plot_data.data.filter(item=>item.pdiag_no===diag_info.diagram_id) 
             
         let res = await load_data(plot_no,plot_data.data,plot_table.data,plot_line.data,diagram_list.data, plot_set.data, diag_info.diagram_id);
 
-
+        console.log(diag_info.diagram_id,  res);
 
         
         if (diag_info.diagram_id==-1) dispatch(set_diag_data({sheet:sheet, idx:idx, data:null, table_data:null}))
@@ -228,8 +228,18 @@ export const Diag = ({sheet, idx}) =>{
 
         else {
          
+          let iii = res.data.findIndex(o=>o.diag_no===parseFloat(diag_info.diagram_id));
+
+          console.log('!!!!!!!!!!!!!!', iii)
+
+          if (iii!==-1&&iii<res.data.length) {
          
-          dispatch(set_diag_data({sheet:sheet, idx:idx, data:res.data[0], table_data:(res.table_data[0])?res.table_data:null}))
+            
+            
+            dispatch(set_diag_data({sheet:sheet, idx:idx, data:res.data[iii], table_data:(res.table_data[0])?res.table_data:null}))
+        
+          }
+        
         }
     
         

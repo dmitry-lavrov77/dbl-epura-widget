@@ -9,6 +9,8 @@
     {
 
       
+        
+      
    
        let res_data = [];
     
@@ -18,6 +20,8 @@
   
        let end = diags.length-1;
   
+       
+       /*
        if (dg_no!=='dummy') {
   
        let idx = diags.findIndex(o=>o.pdiag_no===dg_no)
@@ -31,7 +35,7 @@
          }
   
   
-         }
+         }*/
           
        for (let v= start; v<=end;v++) {
     
@@ -83,8 +87,10 @@
         for (let i =0; i<edata.length;i++) {
     
           let item = edata[i];
+
+          //if (item.x===null||item.x==='null') item.x = 0;
     
-          if (item.x===null||item.x===undefined||item.x.toString==='') continue; 
+          if (item.x===null||item.x===undefined||item.x.toString()==='') continue; 
             
     
           let tt = Object.keys(res).indexOf(item.calc_date.toString()+'_'+item.pline_no.toString()); 
@@ -206,7 +212,12 @@
             if (item.y!==null&&item.y!==undefined&&item.y.toString()!=='') {
 
     
-              points[tt1].push({x:(parseFloat(item.x)).toString(), y:(parseFloat(item.y)).toString()}) 
+              let mm = parseFloat(item.x);
+
+              if (mm === null) mm = 0;
+
+
+              points[tt1].push({x:(mm).toString(), y:(parseFloat(item.y)).toString()}) 
     
     
             }
@@ -218,8 +229,13 @@
             res[item.calc_date.toString()+'_'+item.pline_no.toString()][item.x.toString()] = (item.y!==null&&item.y!==undefined&&item.y.toString()!=='')?item.y.toString():''
     
             if (item.y!==null&&item.y!==undefined&&item.y.toString()!=='') {
+
+               let mm = parseFloat(item.x);
+
+              if (mm === null) mm = 0;
+
     
-              points[tt].push({x:(parseFloat(item.x)).toString(), y:parseFloat(item.y).toString()}) 
+              points[tt].push({x:(mm).toString(), y:parseFloat(item.y).toString()}) 
     
     
     

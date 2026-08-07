@@ -180,6 +180,7 @@ export const apiSlice = createApi({
 
 
  getEpuraTable: builder.query({
+ 
 
     query: ({plot_no, dates}) => `CalcPlotTable.sql?PlotNo=${plot_no}&PlotDates='${dates}'`,
 
