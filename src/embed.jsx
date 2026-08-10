@@ -11,6 +11,7 @@ import configReducer from './configSlice';
 
 
 
+
 // ----- INIT function (exported) -----
 
 
@@ -31,20 +32,28 @@ export function init(container, props = {}) {
      */
 
   const baseUrl = props.baseUrl ?? '';
+
+  const dates_selected = (props.mode&&props.mode==='view'&&props.plotdates&&props.plotdates.toString().trim()!=='')?
+                            props.plotdates:(!props.mode||props.mode==='edit')?[]:['generated'];
   
   const store = configureStore({
     reducer: { sheet: sheetReducer, cmenu:contextReducer, layout:layoutReducer,  config:configReducer, [apiSlice.reducerPath]: apiSlice.reducer,},
     preloadedState: {
 
-      config:{baseUrl:baseUrl, generated:(!props.mode||props.mode==='edit')?false:true, plotsets:props.plotsets ?? null, plotlists:props.plotlists ?? null, 
+        config:{baseUrl:baseUrl, generated:(!props.mode||props.mode==='edit')?false:true, plotsets:props.plotsets ?? null, plotlists:props.plotlists ?? null, 
 
         plotdiagrams:props.plotdiagrams ?? null, plotlines:props.plotlines ?? null, plotdata:props.plotdata ?? null, plottable:props.plottable ?? null,
         
         template:props.template ?? null
       
       },
-      layout:{...layoutInitialState, dates_selected:(!props.mode||props.mode==='edit')?[]:['generated'],layout_mode:props.mode ?? 'edit', selected_epura:{plot_no:props.plot_no ?? -1}},
-      
+      layout:{...layoutInitialState, 
+        
+        xlabels:(props.xlabels?props.xlabels:'on'),ylabels:(props.ylabels?props.ylabels:'on'),
+        formulabar:(props.formulabar?props.formulabar:'on'), 
+
+        dates_selected:dates_selected,layout_mode:props.mode ?? 'edit', selected_epura:{plot_no:props.plot_no ?? -1}},
+     
     },
      middleware: (getDefaultMiddleware) =>
 

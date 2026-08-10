@@ -32,7 +32,9 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
 
  const diags = useSelector(store => store.sheet.diags);
 
- 
+ const xlabels=useSelector(store => store.layout.xlabels);
+
+  const ylabels=useSelector(store => store.layout.ylabels);
 
 
 
@@ -56,11 +58,11 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
     <div className="grid-container" ref={gridContainerRef}>
      <div style={{display:'flex', flexDirection:'row'}}>
        <div className="fixed-cell"></div>
-       <ColumnHeaders  ref={colHeadersRef} sheet={sheet} onColumnResizeStart={handleColumnResizeStart} />
+       {xlabels!=='off'&&<ColumnHeaders  ref={colHeadersRef} sheet={sheet} onColumnResizeStart={handleColumnResizeStart} />} 
      </div>
      <div className="grid-body">
       <div style={{display:'flex', flexDirection:'row', overflow:'hidden'}}>
-       <RowHeaders ref={rowHeadersRef} sheet={sheet} onRowResizeStart={handleRowResizeStart}></RowHeaders>
+       {ylabels!=='off'&&<RowHeaders ref={rowHeadersRef} sheet={sheet} onRowResizeStart={handleRowResizeStart}></RowHeaders>}
         <div ref={cellsScrollRef} onScroll={sync_scroll} style={{overflow:'auto'}}>
         <div style={{position:'relative'}}>
  {Array.from({ length: TOTAL_ROWS }).map((_, rowIdx) => (

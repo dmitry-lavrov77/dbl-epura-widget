@@ -317,7 +317,7 @@ const loadTemplate = (template, the_list) => {
 }
 
 
-const initialState = () =>{
+ const initialState = () =>{
 
   let cells = createEmptyGrid(0);
   let columns = createColumns(0);
@@ -332,7 +332,7 @@ const initialState = () =>{
   return (
     
    {
-     
+    
      tcells: cells,
      tcolumns: columns,
      trows: rows,

@@ -14,6 +14,12 @@ export const initialState = {
 
   layout_mode:'',
 
+  xlabels:'on',
+  
+  ylabels:'on',
+  
+  formulabar:'on',
+
 }
 
 const layoutSlice = createSlice({

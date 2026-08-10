@@ -4,14 +4,15 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const dynamicBaseQuery = async (args, api, extraOptions) => {
   const state = api.getState();
-  const baseUrl = state.config.baseUrl;
+  const baseUrl = (state.config.baseUrl)?state.config.baseUrl:'./';
 
-  if (!baseUrl) {
-    throw new Error('Base URL not configured. Did you set it in init()?');
-  }
+  console.log('baseUrl', baseUrl)
 
+  //if (!baseUrl) {
+  //  throw new Error('Base URL not configured. Did you set it in init()?');
+  //}
 
-
+  
   if (args.indexOf('bngplotsets.sql')===0) {
 
     if (state.config.plotsets) return {data:state.config.plotsets};
