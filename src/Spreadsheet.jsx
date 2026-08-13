@@ -36,6 +36,8 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
 
   const ylabels=useSelector(store => store.layout.ylabels);
 
+  //const print_mode = useSelector(state=>state.layout.print_mode )
+
 
 
 

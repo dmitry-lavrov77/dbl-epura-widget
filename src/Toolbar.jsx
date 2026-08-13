@@ -11,10 +11,14 @@ export const Toolbar = ({ activeCell }) => {
 
  const formulabar = useSelector(state=>state.layout.formulabar)
 
+ 
+
+  
+
 
  const addr = (selected)?getColumnLabel(selected.x)+(selected.y+1).toString():''
   return (
-   (formulabar!=='off')&&<div className="toolbar">
+   (formulabar!=='off')&&<div className="toolbar no-print">
       <div className="cell-address">{addr}</div>
       <div className="formula-label">ƒx</div>
       <div className="formula-bar-mock">{selected?((selected.is_calculated)?selected.formula:selected.value):''}</div>

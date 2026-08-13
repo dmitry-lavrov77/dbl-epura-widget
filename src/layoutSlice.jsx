@@ -20,6 +20,8 @@ export const initialState = {
   
   formulabar:'on',
 
+  print_mode:false,
+
 }
 
 const layoutSlice = createSlice({
@@ -50,6 +52,19 @@ const layoutSlice = createSlice({
 
 
       },
+
+
+      // set_print_mode:(state,action) =>{
+
+      //   state.print_mode = action.payload;
+
+        
+
+
+      // },
+
+
+
 
 
       set_layout_mode:(state,action) =>{
@@ -91,6 +106,8 @@ const layoutSlice = createSlice({
     set_epura, toggle_date,
 
     set_layout_mode,
+
+   // set_print_mode
     
         
   } = layoutSlice.actions;

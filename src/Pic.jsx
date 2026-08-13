@@ -249,7 +249,7 @@ const dispatch = useDispatch();
     backgroundColor: 'white',
     minWidth: `${minWidth}px`,
     minHeight: `${minHeight}px`,
-    border: '1px solid gray'
+    border: (layout_mode==='edit')?'1px solid gray':'none'
   };
 
 

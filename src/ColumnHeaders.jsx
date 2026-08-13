@@ -40,7 +40,7 @@ export const ColumnHeaders = ({sheet, onColumnResizeStart, ref }) => {
     );
   }
   return (
-    <div ref={ref} className="column-headers">
+    <div ref={ref} className="column-headers no-print">
       {/* <div className="corner-header" style={{ width: 45, height: DEFAULT_ROW_HEIGHT }} /> */}
       {headers}
     </div>

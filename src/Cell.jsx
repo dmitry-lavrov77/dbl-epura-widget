@@ -185,7 +185,7 @@ export const Cell = ({sheet, x, y}) => {
 
   return (
     <div ref={cellRef} data-cellrow={y} data-cellcol={x} 
-      className={`sheet-cell ${cell_info.type} ${is_selected ? 'selected active' : ''}`}
+      className={`sheet-cell ${cell_info.type} ${is_selected&&layout_mode==='edit' ? 'selected active' : ''}`}
       style={cstyle}
       onMouseDown={
         (e)=>{

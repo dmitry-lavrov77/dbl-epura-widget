@@ -496,6 +496,28 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
   const generated = useSelector(state=>state.config.generated)
   
 
+
+  useEffect(()=>{
+
+   // window.addEventListener('beforeprint', () => {
+
+   //   dispatch(set_print_mode(true))
+   
+   // });
+
+   // window.addEventListener('afterprint', () => {
+   //   dispatch(set_print_mode(false))
+    
+   // });
+
+
+
+
+
+
+  }, [])
+
+
   useEffect(()=>{
 
 

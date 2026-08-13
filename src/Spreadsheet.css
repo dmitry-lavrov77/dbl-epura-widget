@@ -574,3 +574,11 @@ body {
     background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
  }
 }
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

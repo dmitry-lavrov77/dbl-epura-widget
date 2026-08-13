@@ -937,7 +937,7 @@ else if (type === 'bottom') {
     backgroundColor: 'transparent',
     minWidth: `${minWidth}px`,
     minHeight: `${minHeight}px`,
-    border: '1px solid gray'
+    border: (layout_mode==='edit')?'1px solid gray':'none'
   };
 
 
@@ -1120,6 +1120,7 @@ const bottomEdgeResizeStyle = {
       {(layout_mode==='edit')&&<div style={bottomEdgeResizeStyle} onMouseDown={(e) => startDrag(e, 'bottom')} />}   
 
       {(layout_mode==='edit')&&<div  style={windowHeadStyle}  onMouseDown={(e) => startDrag(e, 'move')}>
+       
         <div style={topBorderStyle} />
         <div style={topLeftResizeStyle} />
         <div style={topRightResizeStyle} />
@@ -1157,7 +1158,7 @@ const bottomEdgeResizeStyle = {
          {diag_info.legend.show&&diag_info.data&&<Legend position={diag_info.legend.pos} legends={diag_info.data.legends} colors={diag_info.data.colors} linestyles={diag_info.data.linestyles}></Legend>}  
          {(diag_info.data)?
 
-            <div  ref={ref} style={{position: 'absolute', left:`${diag_info.cleft+'px'}`, right:`${diag_info.cright+'px'}`, top:`${diag_info.ctop+'px'}`, bottom:`${diag_info.cbottom+'px'}`, border: '1px solid gray',
+            <div  ref={ref} style={{position: 'absolute', left:`${diag_info.cleft+'px'}`, right:`${diag_info.cright+'px'}`, top:`${diag_info.ctop+'px'}`, bottom:`${diag_info.cbottom+'px'}`, border: `${(layout_mode==='edit')?'1px solid gray':'none'}`,
             display: 'flex', flexDirection: 'row'}}>
 
            

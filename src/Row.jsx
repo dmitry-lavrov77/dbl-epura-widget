@@ -47,7 +47,7 @@ export const RowHeaders = ({sheet, onRowResizeStart, ref}) =>{
 
 
 
-     <div className="row-headers-fixed" ref={ref}>
+     <div className="row-headers-fixed no-print" ref={ref}>
 
 
             {Array.from({ length: TOTAL_ROWS }).map((_, rowIdx) => (
