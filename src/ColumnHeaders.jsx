@@ -5,17 +5,21 @@ import {get_col_info} from './sheetSlice'
 const ColumnHeader = ({ sheet, idx, onColumnResizeStart }) => {
 
   const col =useSelector(state=>get_col_info(state, sheet, idx));
+
+  let cscale = useSelector(state=>state.layout.cscale)
+
+  const cwidth = parseFloat(col.width)*cscale;
   
   return (
 
 
-    <div key={idx} className="col-header" style={{ width: col.width, height: DEFAULT_ROW_HEIGHT }}>
+    <div key={idx} className="col-header" style={{ width: cwidth, height: DEFAULT_ROW_HEIGHT }}>
         {col.label}
         
           <div className={'col-header-rail'} style={{ display:'none', width:'1px', backgroundColor:'black',position:'absolute', top:'0', right:'0px', height:'100vh'}}></div> 
           <div className={'col-header-rail'} style={{ display:'none', width:'1px', backgroundColor:'black',position:'absolute', top:'0', left:'0px', height:'100vh'}}></div> 
 
-        <div className="col-resize-handle" onMouseDown={(e) => onColumnResizeStart(e, idx)}>
+        <div className="col-resize-handle" onMouseDown={(e) => onColumnResizeStart(e, idx, cscale)}>
          
         </div>
     </div>

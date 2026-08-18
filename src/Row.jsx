@@ -9,7 +9,12 @@ export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown}) => {
   
   const cells = [];
 
-  const rowHeight = useSelector(state=>get_row_info(state, sheet, rowIndex)).height;
+
+  let rowHeight = useSelector(state=>get_row_info(state, sheet, rowIndex)).height;
+
+  let cscale = useSelector(state=>state.layout.cscale);
+
+  rowHeight = parseFloat(rowHeight)*parseFloat(cscale);
 
   for (let col = 0; col < TOTAL_COLS; col++) {
         cells.push(
@@ -37,7 +42,13 @@ export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown}) => {
 
 export const RowHeaders = ({sheet, onRowResizeStart, ref}) =>{
 
-   const row_heights = useSelector(state=>get_row_heights(state, sheet), shallowEqual);
+   let row_heights = useSelector(state=>get_row_heights(state, sheet), shallowEqual);
+
+   let cscale = useSelector(state=>state.layout.cscale);
+
+
+  
+
 
    const context_menu = useSelector(state=>state.cmenu.context_menu);
 
@@ -51,9 +62,9 @@ export const RowHeaders = ({sheet, onRowResizeStart, ref}) =>{
 
 
             {Array.from({ length: TOTAL_ROWS }).map((_, rowIdx) => (
-             <div key={rowIdx}  className="row-header" style={{ height: `${row_heights[rowIdx]+'px'}`, width: 45 }}>
+             <div key={rowIdx}  className="row-header" style={{ height: `${(parseFloat(row_heights[rowIdx])*cscale).toString()+'px'}`, width: 45 }}>
               {rowIdx + 1}
-                <div className="row-resize-handle" onMouseDown={(e) => onRowResizeStart(e, rowIdx)} />
+                <div className="row-resize-handle" onMouseDown={(e) => onRowResizeStart(e, rowIdx, cscale)} />
                 <div className={'row-header-rail'} style={{ display:'none', height:'1px', backgroundColor:'black',position:'absolute', left:'0', top:'0px', width:'100vw'}}></div> 
                 <div className={'row-header-rail'} style={{ display:'none', height:'1px', backgroundColor:'black',position:'absolute', left:'0', bottom:'0px', width:'100vw'}}></div>
              </div>

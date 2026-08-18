@@ -79,10 +79,10 @@ const dispatch = useDispatch();
   // Direct DOM update (no Redux during drag)
   const updateDom = (newLeft, newTop, newWidth, newHeight) => {
     if (windowRef.current) {
-      windowRef.current.style.left = `${newLeft}px`;
-      windowRef.current.style.top = `${newTop}px`;
-      windowRef.current.style.width = `${newWidth}px`;
-      windowRef.current.style.height = `${newHeight}px`;
+      windowRef.current.style.left = `${newLeft*cscale}px`;
+      windowRef.current.style.top = `${newTop*cscale}px`;
+      windowRef.current.style.width = `${newWidth*cscale}px`;
+      windowRef.current.style.height = `${newHeight*cscale}px`;
     }
   };
   
@@ -92,10 +92,10 @@ const dispatch = useDispatch();
 
     if (type==='move') dispatch(move_link({sheet:sheet,idx:idx,e:e,type:type}))
 
-    const currentLeft = parseFloat(windowRef.current?.style.left) || pic_info.left;
-    const currentTop  = parseFloat(windowRef.current?.style.top)  || pic_info.top;
-    const currentWidth  = parseFloat(windowRef.current?.style.width)  || pic_info.width;
-    const currentHeight = parseFloat(windowRef.current?.style.height) || pic_info.height;
+    const currentLeft = parseFloat(windowRef.current?.style.left) || cscale*pic_info.left;
+    const currentTop  = parseFloat(windowRef.current?.style.top)  || cscale*pic_info.top;
+    const currentWidth  = parseFloat(windowRef.current?.style.width)  || cscale*pic_info.width;
+    const currentHeight = parseFloat(windowRef.current?.style.height) || cscale*pic_info.height;
 
     drag.current = {
       active: true,
@@ -137,7 +137,7 @@ const dispatch = useDispatch();
     // Constrain to parent scrollable area (allow scroll)
     newLeft = Math.max(0, Math.min(newLeft, parentScrollWidth - newWidth));
     newTop = Math.max(0, Math.min(newTop, parentScrollHeight - newHeight));
-    updateDom(newLeft, newTop, newWidth, newHeight);
+    updateDom(newLeft/cscale, newTop/cscale, newWidth/cscale, newHeight/cscale);
   }
   else if (type === 'tl') {
     newLeft = startLeft + dx;
@@ -157,7 +157,7 @@ const dispatch = useDispatch();
     newTop = Math.max(0, Math.min(newTop, parentScrollHeight - minHeight));
     newWidth = Math.max(minWidth, Math.min(newWidth, parentScrollWidth - newLeft));
     newHeight = Math.max(minHeight, Math.min(newHeight, parentScrollHeight - newTop));
-    updateDom(newLeft, newTop, newWidth, newHeight);
+    updateDom(newLeft/cscale, newTop/cscale, newWidth/cscale, newHeight/cscale);
   }
   else if (type === 'tr') {
     newTop = startTop + dy;
@@ -170,7 +170,7 @@ const dispatch = useDispatch();
     newWidth = Math.max(minWidth, Math.min(newWidth, parentScrollWidth - startLeft));
     newTop = Math.max(0, Math.min(newTop, parentScrollHeight - minHeight));
     newHeight = Math.max(minHeight, Math.min(newHeight, parentScrollHeight - newTop));
-    updateDom(startLeft, newTop, newWidth, newHeight);
+    updateDom(startLeft/cscale, newTop/cscale, newWidth/cscale, newHeight/cscale);
   }
   else if (type === 'bl') {
     newLeft = startLeft + dx;
@@ -183,14 +183,14 @@ const dispatch = useDispatch();
     newLeft = Math.max(0, Math.min(newLeft, parentScrollWidth - minWidth));
     newWidth = Math.max(minWidth, Math.min(newWidth, parentScrollWidth - newLeft));
     newHeight = Math.max(minHeight, Math.min(newHeight, parentScrollHeight - startTop));
-    updateDom(newLeft, startTop, newWidth, newHeight);
+    updateDom(newLeft/cscale, startTop/cscale, newWidth/cscale, newHeight/cscale);
   }
   else if (type === 'br') {
     newWidth = startWidth + dx;
     newHeight = startHeight + dy;
     newWidth = Math.max(minWidth, Math.min(newWidth, parentScrollWidth - startLeft));
     newHeight = Math.max(minHeight, Math.min(newHeight, parentScrollHeight - startTop));
-    updateDom(startLeft, startTop, newWidth, newHeight);
+    updateDom(startLeft/cscale, startTop/cscale, newWidth/cscale, newHeight/cscale);
   }
 };
 
@@ -217,9 +217,9 @@ const dispatch = useDispatch();
 
 
     if (drag.current.type !== 'move') {
-     dispatch(update_pic_size({ sheet, idx, width: finalWidth, height: finalHeight  }));
+     dispatch(update_pic_size({ sheet, idx, width: finalWidth/cscale, height: finalHeight/cscale  }));
     }
-    dispatch(update_pic_position({ sheet, idx,  left: finalLeft, top: finalTop }));
+    dispatch(update_pic_position({ sheet, idx,  left: finalLeft/cscale, top: finalTop/cscale }));
 
     document.removeEventListener('mousemove', onDragMove);
     document.removeEventListener('mouseup', onDragEnd);
@@ -235,6 +235,7 @@ const dispatch = useDispatch();
   }, []);
 
   // Sync DOM when store values change (initial render + external updates)
+  const cscale = useSelector(state=>state.layout.cscale);
   useEffect(() => {
     updateDom(pic_info.left, pic_info.top, pic_info.width, pic_info.height);
   }, [pic_info.left, pic_info.top, pic_info.width, pic_info.height]);

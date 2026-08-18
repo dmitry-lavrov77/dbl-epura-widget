@@ -116,6 +116,8 @@ const loadTemplate = (template, the_list) => {
   let sheets = [{sheet:0, title:'Лист1', edited:false, grid_visibility:true,  table_selected:-1, table_pos:'', table_pres:''}];
   let last_created_sheet = 0;
 
+ 
+
   let pics = {}
 
   let diags = {}
@@ -325,6 +327,7 @@ const loadTemplate = (template, the_list) => {
   let selected_cells = {'0':{sheet:0, x:0,y:0, label:'A'}};
   let cells_in_range = {'0':[{x:0, y:0}]};
   let selected_ranges = {'0':{start_x:0, end_x:0, start_y:0, end_y:0}};
+
   //let table_list = [];
 
 
@@ -344,6 +347,7 @@ const loadTemplate = (template, the_list) => {
      sheets:[{sheet:0, title:'Лист1', edited:false, grid_visibility:true,  table_selected:-1, table_pos:'', table_pres:''}],
      last_created_sheet:0,
      selected_object:null,
+    
      
      ////////////////////////////////////////
      
@@ -529,6 +533,7 @@ const sheetSlice = createSlice({
 
      state.selected_cells[ll] = {sheet:state.last_created_sheet+1, x:0,y:0, label:'A'};
      state.selected_object=null,
+    
      state.cells_in_range[ll] = {[ll]:[{x:0, y:0}]};
      state.selected_ranges[ll] = {[ll]:{start_x:0, end_x:0, start_y:0, end_y:0}};
 
@@ -917,6 +922,7 @@ const sheetSlice = createSlice({
      state.cells_in_range = {[sheet]:state.tcells_in_range[sheet]};
      state.selected_ranges = {[sheet]:state.tselected_ranges[sheet]};
      state.selected_object = null,
+     
 
      state.is_selecting = false;
 
@@ -1130,6 +1136,8 @@ const sheetSlice = createSlice({
         state.cells[_keykey].is_in_range = false;
 
       }
+
+    //sss!!!  for (let )
       
 
       s =Object.values(state.cells).find(child => child.edit_mode === true)
@@ -1513,6 +1521,8 @@ const sheetSlice = createSlice({
 
      
      let _key  = action.payload.sheet.toString()+'_'+action.payload.idx.toString();
+
+     console.log('updating!!!!!', action.payload.new_width)
 
      state.columns[_key].width = action.payload.new_width;
 

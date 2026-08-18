@@ -293,10 +293,10 @@ export const Diag = ({sheet, idx}) =>{
   // Direct DOM update (no Redux during drag)
   const updateDom = (newLeft, newTop, newWidth, newHeight) => {
     if (windowRef.current) {
-      windowRef.current.style.left = `${newLeft}px`;
-      windowRef.current.style.top = `${newTop}px`;
-      windowRef.current.style.width = `${newWidth}px`;
-      windowRef.current.style.height = `${newHeight}px`;
+      windowRef.current.style.left = `${cscale*newLeft}px`;
+      windowRef.current.style.top = `${cscale*newTop}px`;
+      windowRef.current.style.width = `${cscale*newWidth}px`;
+      windowRef.current.style.height = `${cscale*newHeight}px`;
     }
   };
   
@@ -360,7 +360,7 @@ export const Diag = ({sheet, idx}) =>{
    
     newLeft = Math.max(-ddx, Math.min(newLeft, parentScrollWidth - newWidth));
     newTop = Math.max(-ddy, Math.min(newTop, parentScrollHeight - newHeight));
-    updateDom(newLeft, newTop, newWidth, newHeight);
+    updateDom(newLeft/cscale, newTop/cscale, newWidth/cscale, newHeight/cscale);
  
   }
   /*else if (type === 'tl') {
@@ -444,12 +444,12 @@ export const Diag = ({sheet, idx}) =>{
         ref.current.style.left =0; 
 
 
-         updateDom(newLeft-dx+start_c_left, startTop, newWidth+dx-start_c_left, startHeight);
+         updateDom((newLeft-dx+start_c_left)/cscale, startTop/cscale, (newWidth+dx-start_c_left)/cscale, startHeight/cscale);
         
         return;
 
     }    
-    updateDom(newLeft, startTop, newWidth, startHeight);
+    updateDom(newLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
     ref.current.style.left = start_c_left-dx + 'px';
  
@@ -476,7 +476,7 @@ export const Diag = ({sheet, idx}) =>{
 
 
 
-     updateDom(newLeft, startTop, newWidth, startHeight);
+     updateDom(newLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
      const svgPoint1 = mainSVG.current.createSVGPoint(); // For SVGPoint
@@ -496,7 +496,7 @@ export const Diag = ({sheet, idx}) =>{
      //if (newLeft - delta<0) updateDom(0, startTop, newWidth-newLeft + delta, startHeight);
      //else 
         
-        updateDom(newLeft - delta, startTop, newWidth, startHeight);
+        updateDom((newLeft - delta)/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
 
@@ -515,7 +515,7 @@ export const Diag = ({sheet, idx}) =>{
 
      
 
-     updateDom(newLeft, startTop, newWidth, startHeight);
+     updateDom(newLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
      const svgPoint1 = mainSVG.current.createSVGPoint(); // For SVGPoint
@@ -532,12 +532,12 @@ export const Diag = ({sheet, idx}) =>{
      let delta = (clientPoint2.x-clientPoint1.x)
 
 
-     updateDom(newLeft - delta, startTop, newWidth, startHeight);
+     updateDom((newLeft - delta)/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
   } else 
 
-  updateDom(newLeft, startTop, newWidth, startHeight);
+  updateDom(newLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
 }
@@ -564,14 +564,14 @@ else if (type === 'right') {
         ref.current.style.right = 0; 
 
 
-        updateDom(startLeft, startTop, newWidth-start_c_right-dx, startHeight);
+        updateDom(startLeft/cscale, startTop/cscale, (newWidth-start_c_right-dx)/cscale, startHeight/cscale);
         
         return;
 
     }    
 
 
-    updateDom(startLeft, startTop, newWidth, startHeight);
+    updateDom(startLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
     ref.current.style.right = start_c_right+dx + 'px';
  
@@ -599,7 +599,7 @@ else if (type === 'right') {
 
 
 
-     updateDom(startLeft, startTop, newWidth, startHeight);
+     updateDom(startLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
      const svgPoint1 = mainSVG.current.createSVGPoint(); // For SVGPoint
@@ -616,7 +616,7 @@ else if (type === 'right') {
      let delta = (clientPoint2.x-clientPoint1.x)
 
 
-     updateDom(startLeft - delta, startTop, newWidth, startHeight);
+     updateDom((startLeft - delta)/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
 
@@ -635,7 +635,7 @@ const svgPoint = mainSVG.current.createSVGPoint(); // For SVGPoint
 
 
 
-     updateDom(startLeft, startTop, newWidth, startHeight);
+     updateDom(startLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
      const svgPoint1 = mainSVG.current.createSVGPoint(); // For SVGPoint
@@ -652,12 +652,12 @@ const svgPoint = mainSVG.current.createSVGPoint(); // For SVGPoint
      let delta = (clientPoint2.x-clientPoint1.x)
 
 
-     updateDom(startLeft - delta, startTop, newWidth, startHeight);
+     updateDom((startLeft - delta)/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 
 
   }
  
-  else updateDom(startLeft, startTop, newWidth, startHeight);
+  else updateDom(startLeft/cscale, startTop/cscale, newWidth/cscale, startHeight/cscale);
 }
 else if (type === 'top') {
 
@@ -685,14 +685,14 @@ else if (type === 'top') {
         
         ref.current.style.top = 0; 
 
-        updateDom(startLeft, newTop+start_c_top-dy, startWidth, newHeight-start_c_top+dy);
+        updateDom(startLeft/cscale, (newTop+start_c_top-dy)/cscale, startWidth/cscale, (newHeight-start_c_top+dy)/cscale);
         
         return;
 
     }    
 
 
-    updateDom(startLeft, newTop, startWidth, newHeight);
+    updateDom(startLeft/cscale, newTop/cscale, startWidth/cscale, newHeight/cscale);
 
     ref.current.style.top = start_c_top-dy + 'px';
  
@@ -718,7 +718,7 @@ else if (type === 'top') {
 
     let clientPoint1 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, newTop, startWidth, newHeight);
+    updateDom(startLeft/cscale, newTop/cscale, startWidth/cscale, newHeight/cscale);
 
     svgPoint = mainSVG.current.createSVGPoint(); // For SVGPoint
               
@@ -730,7 +730,7 @@ else if (type === 'top') {
 
     let clientPoint2 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, newTop+clientPoint1.y-clientPoint2.y, startWidth, newHeight);
+    updateDom(startLeft/cscale, (newTop+clientPoint1.y-clientPoint2.y)/cscale, startWidth/cscale, newHeight/cscale);
 
 
 
@@ -749,7 +749,7 @@ else if (type === 'top') {
 
     let clientPoint1 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, newTop, startWidth, newHeight);
+    updateDom(startLeft/cscale, newTop/cscale, startWidth/cscale, newHeight/cscale);
 
     svgPoint = mainSVG.current.createSVGPoint(); // For SVGPoint
               
@@ -761,7 +761,7 @@ else if (type === 'top') {
 
     let clientPoint2 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, newTop+clientPoint1.y-clientPoint2.y, startWidth, newHeight);
+    updateDom(startLeft/cscale, (newTop+clientPoint1.y-clientPoint2.y)/cscale, startWidth/cscale, newHeight/cscale);
 
 
 
@@ -773,7 +773,7 @@ else if (type === 'top') {
 
 
 
-  else updateDom(startLeft, newTop, startWidth, newHeight);
+  else updateDom(startLeft/cscale, newTop/cscale, startWidth/cscale, newHeight/cscale);
 }
 else if (type === 'bottom') {
 
@@ -794,13 +794,13 @@ else if (type === 'bottom') {
         
         ref.current.style.bottom = 0; 
 
-        updateDom(startLeft, startTop, startWidth, newHeight-start_c_bottom-dy);
+        updateDom(startLeft/cscale, startTop/cscale, startWidth/cscale, (newHeight-start_c_bottom-dy)/cscale);
         
         return;
 
     }    
 
-    updateDom(startLeft, startTop, startWidth, newHeight);
+    updateDom(startLeft/cscale, startTop/cscale, startWidth/cscale, newHeight/cscale);
 
     ref.current.style.bottom = start_c_bottom+dy + 'px';
  
@@ -822,7 +822,7 @@ else if (type === 'bottom') {
 
     let clientPoint1 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, startTop, startWidth, newHeight);
+    updateDom(startLeft/cscale, startTop/cscale, startWidth/cscale, newHeight/cscale);
 
     svgPoint = mainSVG.current.createSVGPoint(); // For SVGPoint
               
@@ -834,7 +834,7 @@ else if (type === 'bottom') {
 
     let clientPoint2 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, startTop+clientPoint1.y-clientPoint2.y, startWidth, newHeight);
+    updateDom(startLeft/cscale, (startTop+clientPoint1.y-clientPoint2.y)/cscale, startWidth/cscale, newHeight/cscale);
 
  
   } else if (diag_info.axis_y_mark2.trim()!==''&&!diag_info.axis_y_mark2_lock_opened) {
@@ -850,7 +850,7 @@ else if (type === 'bottom') {
 
     let clientPoint1 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, startTop, startWidth, newHeight);
+    updateDom(startLeft/cscale, startTop/cscale, startWidth/cscale, newHeight/cscale);
 
     svgPoint = mainSVG.current.createSVGPoint(); // For SVGPoint
               
@@ -862,7 +862,7 @@ else if (type === 'bottom') {
 
     let clientPoint2 = svgPoint.matrixTransform(ctm);
 
-    updateDom(startLeft, startTop+clientPoint1.y-clientPoint2.y, startWidth, newHeight);
+    updateDom(startLeft/cscale, (startTop+clientPoint1.y-clientPoint2.y)/cscale, startWidth/cscale, newHeight/cscale);
 
    // updateDom(startLeft, newTop+clientPoint1.y-clientPoint2.y, startWidth, newHeight);
 
@@ -877,7 +877,7 @@ else if (type === 'bottom') {
 
 
   else
-  updateDom(startLeft, startTop, startWidth, newHeight);
+  updateDom(startLeft/cscale, startTop/cscale, startWidth/cscale, newHeight/cscale);
 }
 
 };
@@ -899,9 +899,9 @@ else if (type === 'bottom') {
     const finalCBottom = ref.current?parseFloat(ref.current.style.bottom):'none';
    
     if (drag.current.type !== 'move') {
-     dispatch(update_diag_size({ sheet, idx,  width: finalWidth, height: finalHeight,cleft:finalCLeft, cright:finalCRight, ctop:finalCTop, cbottom:finalCBottom}));
+     dispatch(update_diag_size({ sheet, idx,  width: finalWidth/cscale, height: finalHeight/cscale,cleft:finalCLeft/cscale, cright:finalCRight/cscale, ctop:finalCTop/cscale, cbottom:finalCBottom/cscale}));
     }
-    dispatch(update_diag_position({ sheet, idx,  left: finalLeft, top: finalTop  }));
+    dispatch(update_diag_position({ sheet, idx,  left: finalLeft/cscale, top: finalTop/cscale  }));
 
     document.removeEventListener('mousemove', onDragMove);
     document.removeEventListener('mouseup', onDragEnd);
@@ -917,6 +917,10 @@ else if (type === 'bottom') {
   }, []);
 
   // Sync DOM when store values change (initial render + external updates)
+
+
+  const cscale = useSelector(state=>state.layout.cscale);
+
   useEffect(() => {
     updateDom(diag_info.left, diag_info.top, diag_info.width, diag_info.height);
   }, [diag_info.left, diag_info.top, diag_info.width, diag_info.height]);

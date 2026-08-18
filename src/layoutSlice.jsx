@@ -22,6 +22,8 @@ export const initialState = {
 
   print_mode:false,
 
+  cscale:1.5,
+
 }
 
 const layoutSlice = createSlice({
@@ -106,6 +108,8 @@ const layoutSlice = createSlice({
     set_epura, toggle_date,
 
     set_layout_mode,
+
+    
 
    // set_print_mode
     

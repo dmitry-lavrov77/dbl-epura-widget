@@ -151,7 +151,9 @@ const ExcelApp = () => {
 
  
 
- const handleRowResizeStart = (e, idx) => {
+ const handleRowResizeStart = (e, idx, cscale) => {
+
+     console.log('start')
 
      resizeObject.current = {
       sheet:sheet,
@@ -159,7 +161,8 @@ const ExcelApp = () => {
       tpe:'row',
       obj:e.target.parentElement,
       startY: e.clientY,
-      startHeight:e.target.parentElement.clientHeight
+      startHeight:e.target.parentElement.clientHeight,
+      cscale:cscale
 
     }
 
@@ -172,7 +175,7 @@ const ExcelApp = () => {
   };
 
 
-  const handleColumnResizeStart = (e, idx) =>{
+  const handleColumnResizeStart = (e, idx, cscale) =>{
 
    
     resizeObject.current = {
@@ -182,9 +185,15 @@ const ExcelApp = () => {
       tpe:'col',
       obj:e.target.parentElement,
       startX: e.clientX,
-      startWidth:e.target.parentElement.clientWidth
+      startWidth:e.target.parentElement.clientWidth,
+      cscale:cscale
 
     }
+
+
+
+    console.log(resizeObject.current)
+
 
     let rails = e.target.parentElement.querySelectorAll('.col-header-rail');
 
@@ -201,6 +210,8 @@ const ExcelApp = () => {
 
   
   const handleMouseMove = (e) => {
+
+    console.log('move')
    
     if (!isResizing.current||!resizeObject.current ) return;
 
@@ -221,9 +232,13 @@ const ExcelApp = () => {
   
     isResizing.current = false;
 
+    
+
     dispatch(stop_selecting())
 
     if (resizeObject.current) {
+
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2')
 
       let rails = resizeObject.current.obj.querySelectorAll('.col-header-rail');
 
@@ -233,9 +248,12 @@ const ExcelApp = () => {
 
       for (let i =0; i<rails.length;i++) rails[i].style.display='none'; 
 
-      if (resizeObject.current.tpe==='col') dispatch(update_col_width({sheet:resizeObject.current.sheet, idx:resizeObject.current.idx, new_width:parseFloat(resizeObject.current.obj.style.width)}))
+      
 
-      else dispatch(update_row_height({sheet:resizeObject.current.sheet, idx:resizeObject.current.idx, new_height:parseFloat(resizeObject.current.obj.style.height)}))
+
+      if (resizeObject.current.tpe==='col') dispatch(update_col_width({sheet:resizeObject.current.sheet, idx:resizeObject.current.idx, new_width:parseFloat(resizeObject.current.obj.style.width)/resizeObject.current.cscale}))
+
+      else dispatch(update_row_height({sheet:resizeObject.current.sheet, idx:resizeObject.current.idx, new_height:parseFloat(resizeObject.current.obj.style.height)/resizeObject.current.cscale}))
 
       resizeObject.current = null;
 

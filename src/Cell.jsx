@@ -41,8 +41,27 @@ export const Cell = ({sheet, x, y}) => {
   const is_selected = cell_info.is_selected||cell_info.is_in_range;
   const is_edited = cell_info.edit_mode;
   const inputRef = useRef(null);
-  const height =useSelector(state=>get_row_info(state, sheet, y)).height;
-  const width =useSelector(state=>get_col_info(state, sheet, x)).width;
+  
+  
+
+  let cscale = useSelector(state=>state.layout.cscale);
+
+
+
+  let height =useSelector(state=>get_row_info(state, sheet, y)).height;
+  
+  let width =useSelector(state=>get_col_info(state, sheet, x)).width;
+
+  
+
+
+  height = parseFloat(height)*cscale;
+
+  width = parseFloat(width)*cscale;
+
+
+
+  //console.log('width', width,width2, cscale)
 
   useEffect(() => {
     if (is_edited && inputRef.current) {
@@ -90,7 +109,7 @@ export const Cell = ({sheet, x, y}) => {
 
  if (cell_info.font.font_style.includes('italic')) prefix +='italic ';
 
- let cfont = prefix+cell_info.font.font_size+'pt '+cell_info.font.font_name;
+ let cfont = prefix+cell_info.font.font_size*cscale+'pt '+cell_info.font.font_name;
 
 
   let is_full = false;
