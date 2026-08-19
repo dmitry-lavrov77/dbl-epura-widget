@@ -13,7 +13,9 @@ const XLock = ({svgMain, ref, params, value, idx}) =>{
 
     const dispatch = useDispatch();
 
-    const layout_mode = useSelector(state=>state.layout_mode)
+    const layout_mode = useSelector(state=>state.layout.layout_mode)
+
+     const cscale = 1//useSelector(state=>state.layout.cscale)
 
     const toggle = () =>{
 
@@ -70,6 +72,8 @@ const XLock = ({svgMain, ref, params, value, idx}) =>{
           
       point.x =  (params.x_max-params.x_min>0)?v:params.x_min - v + params.x_max  
 
+
+     
       
 
       const clientPoint = point.matrixTransform(matrix2)
@@ -77,6 +81,8 @@ const XLock = ({svgMain, ref, params, value, idx}) =>{
       const left =  clientPoint.x - svgMain.current.getBoundingClientRect().x  +'px';
 
       const top =  clientPoint.y - svgMain.current.getBoundingClientRect().y +'px';
+
+    
 
       return (layout_mode==='edit')?<div onClick = {toggle} style={{cursor:'pointer', transform: 'translate(-50%, -50%)', position:'absolute', color:`${idx===1?'red':'blue'}`, left:`${left}`,top:`${top}`}}>
         {(locked)?<FontAwesomeIcon icon={faLock} />:<FontAwesomeIcon icon={faLockOpen} />}
@@ -96,7 +102,9 @@ const YLock = ({svgMain, ref, params, value, idx}) =>{
     const [rect, setRect] = useState(null)
 
 
-    const layout_mode = useSelector(state=>state.layout_mode)
+    const layout_mode = useSelector(state=>state.layout.layout_mode)
+
+    const cscale = useSelector(state=>state.layout.cscale)
 
 
        const dispatch = useDispatch();
@@ -160,11 +168,18 @@ const YLock = ({svgMain, ref, params, value, idx}) =>{
 
       const clientPoint = point.matrixTransform(matrix2)
 
+      
+      
+
       const left =  clientPoint.x - svgMain.current.getBoundingClientRect().x  +'px';
+
+      
 
       const top =  clientPoint.y - svgMain.current.getBoundingClientRect().y +'px';
 
-      return (layout_mode==='edit')?<div onClick={toggle} style={{cursor:'pointer', transform: 'translate(-50%, -50%)', position:'absolute', color:`${idx===1?'red':'blue'}`, left:`${left}`,top:`${top}`}}>
+     
+
+      return (layout_mode==='edit')?<div onClick={toggle} className='hellohello' style={{cursor:'pointer', transform: 'translate(-50%, -50%)', position:'absolute', color:`${idx===1?'red':'blue'}`, left:`${left}`,top:`${top}`}}>
          {(locked)?<FontAwesomeIcon icon={faLock} />:<FontAwesomeIcon icon={faLockOpen} />}
         
         </div>:<></>
@@ -226,7 +241,7 @@ const YScale = ({ticks, params, yRef, ref}) =>{
 
               
           
-               point.y =  (params.y_max-params.y_min>0)?v:(params.y_min+params.y_max-v);
+               point.y =  (params.y_max-params.y_min<0)?v:(params.y_min+params.y_max-v);
 
                const clientPoint = {y: point.y * d + f};
                // = point.matrixTransform(matrix);
@@ -457,7 +472,7 @@ export const Graph = ({sheet, idx, data, mainSVG, ref}) =>{
    let tt = (params.y_min<=params.y_max)?params.y_min+params.y_step:params.y_max+params.y_step
 
 
-   let i=1;
+   let i=0;
 
 
 

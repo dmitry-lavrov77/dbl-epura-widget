@@ -10,7 +10,7 @@ export const Pic = ({sheet, idx}) =>{
 const pic_info = useSelector(state => get_pic_info(state, sheet, idx));
 
 
-const layout_mode = useSelector(state => state.layout.layout_mode);
+ const layout_mode = useSelector(state => state.layout.layout_mode);
 
  const selected_object = useSelector(state => state.sheet.selected_object);
 
@@ -238,7 +238,7 @@ const dispatch = useDispatch();
   const cscale = useSelector(state=>state.layout.cscale);
   useEffect(() => {
     updateDom(pic_info.left, pic_info.top, pic_info.width, pic_info.height);
-  }, [pic_info.left, pic_info.top, pic_info.width, pic_info.height]);
+  }, [pic_info.left, pic_info.top, pic_info.width, pic_info.height, cscale]);
 
 
 

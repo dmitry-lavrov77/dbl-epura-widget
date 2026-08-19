@@ -153,7 +153,7 @@ const ExcelApp = () => {
 
  const handleRowResizeStart = (e, idx, cscale) => {
 
-     console.log('start')
+     
 
      resizeObject.current = {
       sheet:sheet,
@@ -192,7 +192,7 @@ const ExcelApp = () => {
 
 
 
-    console.log(resizeObject.current)
+   
 
 
     let rails = e.target.parentElement.querySelectorAll('.col-header-rail');
@@ -211,7 +211,7 @@ const ExcelApp = () => {
   
   const handleMouseMove = (e) => {
 
-    console.log('move')
+  
    
     if (!isResizing.current||!resizeObject.current ) return;
 
@@ -238,7 +238,7 @@ const ExcelApp = () => {
 
     if (resizeObject.current) {
 
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2')
+     
 
       let rails = resizeObject.current.obj.querySelectorAll('.col-header-rail');
 

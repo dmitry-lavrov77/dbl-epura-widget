@@ -61,7 +61,6 @@ export const Cell = ({sheet, x, y}) => {
 
 
 
-  //console.log('width', width,width2, cscale)
 
   useEffect(() => {
     if (is_edited && inputRef.current) {

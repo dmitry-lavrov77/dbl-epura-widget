@@ -220,7 +220,7 @@ export const Diag = ({sheet, idx}) =>{
             
         let res = await load_data(plot_no,plot_data.data,plot_table.data,plot_line.data,diagram_list.data, plot_set.data, diag_info.diagram_id);
 
-        console.log(diag_info.diagram_id,  res);
+        
 
         
         if (diag_info.diagram_id==-1) dispatch(set_diag_data({sheet:sheet, idx:idx, data:null, table_data:null}))
@@ -230,7 +230,7 @@ export const Diag = ({sheet, idx}) =>{
          
           let iii = res.data.findIndex(o=>o.diag_no===parseFloat(diag_info.diagram_id));
 
-          console.log('!!!!!!!!!!!!!!', iii)
+          
 
           if (iii!==-1&&iii<res.data.length) {
          
@@ -923,7 +923,7 @@ else if (type === 'bottom') {
 
   useEffect(() => {
     updateDom(diag_info.left, diag_info.top, diag_info.width, diag_info.height);
-  }, [diag_info.left, diag_info.top, diag_info.width, diag_info.height]);
+  }, [diag_info.left, diag_info.top, diag_info.width, diag_info.height, cscale]);
 
 
   useEffect(()=>{

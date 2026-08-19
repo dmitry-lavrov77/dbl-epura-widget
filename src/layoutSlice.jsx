@@ -22,7 +22,7 @@ export const initialState = {
 
   print_mode:false,
 
-  cscale:1.5,
+  cscale:1,
 
 }
 
@@ -78,6 +78,15 @@ const layoutSlice = createSlice({
       },
 
 
+      set_cscale:(state,action) =>{
+
+        if (action.payload>3) state.cscale = 3;
+        else if (action.payload<0.5) state.cscale =0.5
+        else state.cscale = action.payload;
+     
+      },
+
+
 
       toggle_date:(state,action)=>{
 
@@ -108,6 +117,8 @@ const layoutSlice = createSlice({
     set_epura, toggle_date,
 
     set_layout_mode,
+
+    set_cscale,
 
     
 

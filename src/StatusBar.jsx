@@ -1,6 +1,6 @@
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import {add_sheet, select_sheet, delete_sheet, rename_sheet, edit_sheet_tab} from './sheetSlice'
-import {set_layout_mode} from './layoutSlice'
+import {set_layout_mode, set_cscale} from './layoutSlice'
 import {useState, useEffect, useRef} from 'react'
 import {show_menu} from './contextSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -1053,11 +1053,19 @@ export const StatusBar = () => {
 
    const generated = useSelector(state=>state.config.generated)
 
+   const cscale = useSelector(state=>state.layout.cscale);
+
+   let prr = cscale*100;
+
+   if (prr<=100) prr = prr - 50;
+   
+   else prr = (prr-100)/4 + 50;
+
    const dispatch = useDispatch();
 
    return ( 
 
-  <div className="excel-bottom-bar">
+  <div className="excel-bottom-bar no-print">
     <div className="sheet-tabs">
       
      <div style={{minWidth:'30px', maxWidth:'30px'}}></div>
@@ -1078,14 +1086,24 @@ export const StatusBar = () => {
     </div>
     <div className="status-right">
 
-      {(layout_mode==='edit')&&<div onClick={()=>do_save()} title='Сохранить изменения' className="view-modes" style={{fontSize:'22px', cursor:'pointer'}}><FontAwesomeIcon icon={faFloppyDisk}/></div>}
+      {(layout_mode==='edit')&&<div  onClick={()=>do_save()} title='Сохранить изменения' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer'}}><FontAwesomeIcon icon={faFloppyDisk}/></div>}
       
       
-      {!generated&&<div onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'black'}`}}><FontAwesomeIcon icon={faBinoculars}/></div>}
+      {!generated&&<div className='no-print' onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'black'}`}}><FontAwesomeIcon icon={faBinoculars}/></div>}
       
-        <div onClick={()=>{do_save_excel()}} title='Выгрузить в Excel' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:'green'}}><FontAwesomeIcon icon={faFileExcel}/></div>
+        <div className='no-print' onClick={()=>{do_save_excel()}} title='Выгрузить в Excel' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:'green'}}><FontAwesomeIcon icon={faFileExcel}/></div>
 
-      {/* <div className="zoom-controls"><span>−</span><span>100%</span><span>+</span><span>🔘──────</span></div> */}
+        <div className='no-print' style={{  cursor: 'pointer'}} onClick = {()=>dispatch(set_cscale(cscale-0.1))} title="Уменьшить масштаб"><svg class="svg-inline--fa fa-minus" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"></path></svg></div> 
+
+        <div className='no-print' style={{minWidth: '100px', maxWidth: '100px', height: '30px', position: 'relative'}}>
+        
+        <div className='no-print' style={{ minWidth:'100px', maxWidth:'100px', borderBottom: '1px solid', height: '45%'}}></div><div style={{position: 'absolute', top: '25%', bottom: '25%', width: '5px', left: `${prr.toString()+'px'}`, backgroundColor:'black'}}></div></div>
+
+        <div className='no-print' onClick = {()=>dispatch(set_cscale(cscale+0.1))} style={{paddingRight: '10px',  cursor: 'pointer'}} title="Увеличить масштаб"><svg class="svg-inline--fa fa-plus" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"></path></svg></div>
+
+        <div className='no-print' >{(Math.round(cscale*100)).toString()}</div>
+
+      {/* <div className="zoom-controls"><span>−</span><span>100%</span><span>+</span><span>──────</span></div> */}
       {/* <div className="status-message">Ready</div> */}
     </div>
   </div>)

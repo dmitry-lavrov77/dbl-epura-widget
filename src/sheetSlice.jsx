@@ -1522,7 +1522,7 @@ const sheetSlice = createSlice({
      
      let _key  = action.payload.sheet.toString()+'_'+action.payload.idx.toString();
 
-     console.log('updating!!!!!', action.payload.new_width)
+     
 
      state.columns[_key].width = action.payload.new_width;
 
