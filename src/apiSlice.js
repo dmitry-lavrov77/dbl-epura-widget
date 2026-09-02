@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { update_spinner_status } from './layoutSlice';
 
 
 
@@ -12,6 +13,14 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
   //  throw new Error('Base URL not configured. Did you set it in init()?');
   //}
 
+  if (args.url) {
+
+   // console.log(state.config.)
+
+   //return {data:null};
+return fetchBaseQuery({ baseUrl })(args, api, extraOptions);
+
+  } 
 
   if (args.indexOf('bngplotsets.sql')===0) {
 
@@ -78,6 +87,8 @@ export const apiSlice = createApi({
   reducerPath: 'api',
   
   baseQuery: dynamicBaseQuery,//fetchBaseQuery({ baseUrl: 'https://31.44.94.234:63123/BratskGES' }),
+
+  tagTypes: ['EpuraTemplate'],
  
   endpoints: (builder) => ({
 
@@ -101,7 +112,26 @@ export const apiSlice = createApi({
         body:'PlotNo='+plotNo.toString()+'&'+'Templ='+templ
 
       }),
+      invalidatesTags: (result, error) => {
+       if (error) return [];
+       return [{ type: 'EpuraTemplate' }];
+      },
 
+   async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    // Перед запросом — включаем спиннер
+    dispatch(update_spinner_status(true));
+
+    try {
+      await queryFulfilled;
+      // После успешного завершения — выключаем спиннер
+      dispatch(update_spinner_status(false));
+    } catch (error) {
+      // В случае ошибки — тоже выключаем
+      dispatch(update_spinner_status(false));
+      // При необходимости можно обработать ошибку дополнительно
+      console.error('Ошибка сохранения:', error);
+    }
+  },
 
     }),
  
@@ -148,7 +178,26 @@ export const apiSlice = createApi({
         
         return  (response&&response.length)?JSON.parse(response[0].etemplate):null;
 
-      }
+      }, providesTags: ['EpuraTemplate'],
+
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    // Перед запросом — включаем спиннер
+    dispatch(update_spinner_status(true));
+
+    try {
+      await queryFulfilled;
+      // После успешного завершения — выключаем спиннер
+      dispatch(update_spinner_status(false));
+    } catch (error) {
+      // В случае ошибки — тоже выключаем
+      dispatch(update_spinner_status(false));
+      // При необходимости можно обработать ошибку дополнительно
+      console.error('Ошибка сохранения:', error);
+    }
+  },
+
+   
+ 
     }),
 
 
@@ -177,6 +226,26 @@ export const apiSlice = createApi({
 
  getEpuraData: builder.query({
   query: ({plot_no, dates}) => `PlotData.sql?PlotNo=${plot_no}&PlotDates='${dates}'`,
+
+  async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    // Перед запросом — включаем спиннер
+    dispatch(update_spinner_status(true));
+
+    try {
+      await queryFulfilled;
+      // После успешного завершения — выключаем спиннер
+      dispatch(update_spinner_status(false));
+    } catch (error) {
+      // В случае ошибки — тоже выключаем
+      dispatch(update_spinner_status(false));
+      // При необходимости можно обработать ошибку дополнительно
+      console.error('Ошибка сохранения:', error);
+    }
+  },
+
+ 
+
+
 }),
 
 
@@ -184,6 +253,24 @@ export const apiSlice = createApi({
  
 
     query: ({plot_no, dates}) => `CalcPlotTable.sql?PlotNo=${plot_no}&PlotDates='${dates}'`,
+
+    async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    // Перед запросом — включаем спиннер
+    dispatch(update_spinner_status(true));
+
+    try {
+      await queryFulfilled;
+      // После успешного завершения — выключаем спиннер
+      dispatch(update_spinner_status(false));
+    } catch (error) {
+      // В случае ошибки — тоже выключаем
+      dispatch(update_spinner_status(false));
+      // При необходимости можно обработать ошибку дополнительно
+      console.error('Ошибка сохранения:', error);
+    }
+  },
+
+ 
 
      
 

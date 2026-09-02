@@ -1250,6 +1250,10 @@ const sheetSlice = createSlice({
 
       state.cells[_key].is_selected = true;
 
+      state.cells[_key].edit_value =state.cells[_key].value;
+
+       state.cells[_key].edit_mode = true;
+
       state.cells[_key].is_in_range = true;
 
       state.selected_ranges[action.payload.sheet.toString()] = { start_x:action.payload.x, 

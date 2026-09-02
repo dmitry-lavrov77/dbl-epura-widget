@@ -57,15 +57,15 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
 
   return (
 
-    <div className="grid-container" ref={gridContainerRef}>
+    <div className="grid-container on-print" ref={gridContainerRef}>
      <div style={{display:'flex', flexDirection:'row'}}>
        <div className="fixed-cell"></div>
        {xlabels!=='off'&&<ColumnHeaders  ref={colHeadersRef} sheet={sheet} onColumnResizeStart={handleColumnResizeStart} />} 
      </div>
-     <div className="grid-body">
-      <div style={{display:'flex', flexDirection:'row', overflow:'hidden'}}>
+     <div className="grid-body on-print">
+      <div className='on-print' style={{display:'flex', flexDirection:'row', overflow:'hidden'}}>
        {ylabels!=='off'&&<RowHeaders ref={rowHeadersRef} sheet={sheet} onRowResizeStart={handleRowResizeStart}></RowHeaders>}
-        <div ref={cellsScrollRef} onScroll={sync_scroll} style={{overflow:'auto'}}>
+        <div ref={cellsScrollRef} onScroll={sync_scroll} className='sync-scroll on-print' /*style={{overflow:'auto'}}*/>
         <div style={{position:'relative'}}>
  {Array.from({ length: TOTAL_ROWS }).map((_, rowIdx) => (
            
@@ -273,7 +273,7 @@ const ExcelApp = () => {
   }, [handleMouseMove, handleMouseUp]);
 
   return (
-    <div className="spreadsheet">
+    <div className="spreadsheet on-print">
       <Toolbar  />
       <Sheet sheet={sheet} handleColumnResizeStart={handleColumnResizeStart} handleRowResizeStart={handleRowResizeStart}></Sheet>
       <StatusBar />

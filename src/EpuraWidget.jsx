@@ -481,6 +481,17 @@ const Divider = ({pos}) =>{
 }
 
 
+const CustomSpinner = () => {
+
+  return (
+  
+  <div  className="custom-spinner" />
+  
+)
+
+};
+
+
 const EpuraWidget = ({ title, mode = 'edit' }) => {
   
   const [scaffolded, SetScaffolded] = useState(false)  
@@ -494,6 +505,8 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
   const  [scaffold, { isLoading: isUpdating } ]  = useScaffoldEpuraTableMutation();
 
   const generated = useSelector(state=>state.config.generated)
+
+  const spinner_on = useSelector(state=>state.layout.spinner_on)
   
 
 
@@ -548,13 +561,23 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
   return (
      (mode_set&&layout_mode!=='')? 
-      <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'row'}}>
+      <div style={{position:'relative', width:'100%', height:'100%', display:'flex', flexDirection:'row'}}>
+          
+   {spinner_on&&<div style={{
+    position: 'absolute',
+    top: 0, left: 0, width: '100%', height: '100%',
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    zIndex: 9999,
+  }}>
+    <CustomSpinner/>
+  </div>}
 
         {(layout_mode==='edit')?<RightPane></RightPane>:(generated)?<SilentPane></SilentPane>:null}
         
       {(layout_mode==='edit')&&<Divider pos={'left'}></Divider>}
     
-      <div style={{flex:'1', overflow:'hidden'}} > 
+      <div className='on-print' style={{flex:'1', overflow:'hidden'}} > 
       
         {scaffolded&&<ExcelApp></ExcelApp>}
       

@@ -188,10 +188,19 @@ export const Cell = ({sheet, x, y}) => {
           type="text"
           value={cell_info.edit_value}
           
-          onChange={(e) => onEditChange(e.target.value)}
+          onChange={(e) => {
+            let span = document.createElement('span'); 
+            span.style.font=cfont; 
+            span.textContent=e.target.value; 
+            document.body.appendChild(span); 
+            console.log(span.offsetWidth, span); 
+            if (e.target.clientWidth<span.offsetWidth+4) inputRef.current.style.width=span.offsetWidth+'px'; 
+            else inputRef.current.style.width='100%';
+            document.body.removeChild(span); 
+            onEditChange(e.target.value)}}
           onBlur={()=> dispatch(edit_mode_save({ sheet: sheet, x: x, y: y }))}
           onKeyDown={handleKeyDown}
-          style={{ fieldSizing:'content', zIndex:5001, height: '100%', border: 'none', outline: 'none', padding: '0 8px', font:cfont }}
+          style={{ fieldSizing:'content', zIndex:5001, height: '100%', border: 'none', width:'100%', outline: 'none', padding: '0 8px', font:cfont }}
         />
         
       </div>

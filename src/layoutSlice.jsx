@@ -24,6 +24,8 @@ export const initialState = {
 
   cscale:1,
 
+  spinner_on:false
+
 }
 
 const layoutSlice = createSlice({
@@ -33,6 +35,12 @@ const layoutSlice = createSlice({
   initialState,
   
   reducers: {
+
+      update_spinner_status:(state,action) =>{
+
+        state.spinner_on = action.payload;    
+
+      },
 
       update_left_pane_width:(state,action) =>{
 
@@ -119,6 +127,8 @@ const layoutSlice = createSlice({
     set_layout_mode,
 
     set_cscale,
+
+    update_spinner_status,
 
     
 
