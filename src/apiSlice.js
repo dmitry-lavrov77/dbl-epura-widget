@@ -66,7 +66,7 @@ return fetchBaseQuery({ baseUrl })(args, api, extraOptions);
     
   }
 
-  if (args.indexOf('diagtemplateex.sql')===0) {
+  if (args.indexOf('diagtemplate_new.sql')===0) {
 
 
     if (state.config.template) return {data:state.config.template}
@@ -94,7 +94,11 @@ export const apiSlice = createApi({
 
     scaffoldEpuraTable: builder.mutation({
 
-      query: () => `createtemplateex.sql`,
+      query: () => ({url:`createtemplateex.sql`,
+         method:'POST',
+        body:''
+
+      }),  
 
 
     }),
@@ -109,7 +113,7 @@ export const apiSlice = createApi({
       query: ({plotNo, templ}) => ( {url:`diagtemplateinsex.sql`,
 
         method:'POST',
-        body:'PlotNo='+plotNo.toString()+'&'+'Templ='+templ
+        body:'PlotNo='+plotNo.toString()+'&'+'Templ='+templ+'&version=1'
 
       }),
       invalidatesTags: (result, error) => {
@@ -169,14 +173,14 @@ export const apiSlice = createApi({
     }),
 
     getEpuraTemplate: builder.query({
-      query: (plot_no) => `diagtemplateex.sql?PlotNo=${plot_no}`,
+      query: (plot_no) => `diagtemplate_new.sql?PlotNo=${plot_no}`,
       transformResponse: (response) =>{
          
 
-        return  (response&&response.length)?((response[0].etemplate_actual&&response[0].etemplate_actual.length)?JSON.parse(response[0].etemplate_actual):JSON.parse(response[0].etemplate)):null;
+        //return  (response&&response.length)?((response[0].etemplate_actual&&response[0].etemplate_actual.length)?JSON.parse(response[0].etemplate_actual):JSON.parse(response[0].etemplate)):null;
 
         
-        return  (response&&response.length)?JSON.parse(response[0].etemplate):null;
+        return  (response&&response.length)?JSON.parse(response[0].template):null;
 
       }, providesTags: ['EpuraTemplate'],
 

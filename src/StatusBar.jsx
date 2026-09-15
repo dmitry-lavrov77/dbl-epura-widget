@@ -4,7 +4,7 @@ import {set_layout_mode, set_cscale} from './layoutSlice'
 import {useState, useEffect, useRef} from 'react'
 import {show_menu} from './contextSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk, faBinoculars, faFileExcel} from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk, faBinoculars, faEye, faFileExcel} from '@fortawesome/free-solid-svg-icons';
 import {get_cells_keys, get_columns_keys, get_rows_keys} from './consts'
 import {useSaveEpuraMutation} from './apiSlice'
 import { ExcelMaker } from './excel-maker';
@@ -1089,7 +1089,7 @@ export const StatusBar = () => {
       {(layout_mode==='edit')&&<div  onClick={()=>do_save()} title='Сохранить изменения' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer'}}><FontAwesomeIcon icon={faFloppyDisk}/></div>}
       
       
-      {!generated&&<div className='no-print' onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'black'}`}}><FontAwesomeIcon icon={faBinoculars}/></div>}
+      {!generated&&<div className='no-print' onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'deepskyblue'}`}}><FontAwesomeIcon icon={faEye}/></div>}
       
         <div className='no-print' onClick={()=>{do_save_excel()}} title='Выгрузить в Excel' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:'green'}}><FontAwesomeIcon icon={faFileExcel}/></div>
 

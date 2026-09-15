@@ -534,9 +534,9 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
   useEffect(()=>{
 
 
-    const do_scaffold = async () =>{
+   
 
-      
+    const do_scaffold = async () =>{     
 
        await scaffold();
 
@@ -544,16 +544,16 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
     }
 
-    
+   
 
-    if (layout_mode==='edit'||generated) do_scaffold();
+    if (!scaffolded&&(layout_mode==='edit'||generated)) do_scaffold();
 
     //dispatch(set_layout_mode(mode));
 
     //SetMode(true);
 
 
-  },[generated])
+  },[generated, layout_mode, scaffolded])
 
   
 
