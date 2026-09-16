@@ -204,13 +204,14 @@ export const Diag = ({sheet, idx}) =>{
 
  const plot_set = useGetPlotSetQuery();
 
+ 
  const diagram_list = useGetDiagramListQuery();
  
  const plot_line = useGetPlotLineQuery();
 
 
 
-
+/*
  useEffect(()=>{
 
 
@@ -270,6 +271,8 @@ export const Diag = ({sheet, idx}) =>{
 
  },[plot_no, sheet, idx, dates,plot_data,plot_table,plot_set,diagram_list,plot_line, diag_info.diagram_id, diag_info.table, load_data])
  
+*/
+
   const ref = useRef(null)
 
  
@@ -1108,7 +1111,31 @@ const bottomEdgeResizeStyle = {
 
     },[mlink,sheet,idx])
 
+    const ddata = useSelector(state=>state.data.epuraData);
 
+    
+     let ddata0 = null;
+
+     let iii = (ddata)?ddata.data.findIndex(o=>o.diag_no===parseFloat(diag_info.diagram_id)):-1;
+
+          
+
+     if (iii!==-1&&iii<ddata.data.length) {
+         
+          ddata0 =  {sheet:sheet, idx:idx, data:ddata.data[iii], table_data:(ddata.table_data[0])?ddata.table_data:null} 
+            
+          //dispatch(set_diag_data({sheet:sheet, idx:idx, data:res.data[iii], table_data:(res.table_data[0])?res.table_data:null}))
+        
+     }
+        
+     
+     
+
+
+
+
+
+  
    
 
     return (
@@ -1160,13 +1187,13 @@ const bottomEdgeResizeStyle = {
       <div ref={diagBody} style={{backgroundColor: 'transparent',  position: 'absolute', top:'21px', left:'4px', right:'4px', bottom:'4px'}}>
 
          {diag_info.legend.show&&diag_info.data&&<Legend position={diag_info.legend.pos} legends={diag_info.data.legends} colors={diag_info.data.colors} linestyles={diag_info.data.linestyles}></Legend>}  
-         {(diag_info.data)?
+         {(ddata0?.data)?
 
             <div  ref={ref} style={{position: 'absolute', left:`${diag_info.cleft+'px'}`, right:`${diag_info.cright+'px'}`, top:`${diag_info.ctop+'px'}`, bottom:`${diag_info.cbottom+'px'}`, border: `${(layout_mode==='edit')?'1px solid gray':'none'}`,
             display: 'flex', flexDirection: 'row'}}>
 
            
-           <Graph sheet={sheet} idx={idx} data={diag_info.data} mainSVG={mainSVG} ref={ref}></Graph>
+           <Graph sheet={sheet} idx={idx} data={(ddata0)?ddata0.data:null} mainSVG={mainSVG} ref={ref}></Graph>
            
            </div>
            :null}

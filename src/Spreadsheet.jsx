@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import {Cell} from './Cell'
 import {Row, RowHeaders} from './Row'
 import { TOTAL_ROWS} from './consts'
-import {update_col_width, update_row_height, get_col_info, stop_selecting} from './sheetSlice'
+import {update_col_width, update_row_height, get_col_info, stop_selecting, get_grid_visibility} from './sheetSlice'
 import {Toolbar} from  './Toolbar'
 import {StatusBar} from  './StatusBar'
 import {ColumnHeaders} from  './ColumnHeaders'
 import {Pic} from './Pic'
+import { isNumeric } from './formula';
+import { getColumnIndex } from './formula';
 
 import {Diag} from './Diag'
 
@@ -34,10 +36,128 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
 
  const xlabels=useSelector(store => store.layout.xlabels);
 
-  const ylabels=useSelector(store => store.layout.ylabels);
+ const ylabels=useSelector(store => store.layout.ylabels);
 
-  //const print_mode = useSelector(state=>state.layout.print_mode )
+ const grid_visibility = useSelector(state=>get_grid_visibility(state, sheet))
 
+ 
+ const sheets = useSelector(state=>state.sheet.sheets)
+
+ const sh = sheets.find(o=>o.sheet ===sheet);
+
+ const table = useSelector(state=>state.data.epuraData)
+
+ 
+
+ let k = parseFloat(sh.table_selected)
+
+ let min_x =100000; 
+
+ let min_y =100000; 
+
+  let shift_x = 0;
+  let shift_y = 0;
+  
+ let good = true;
+ 
+ let s = sh
+
+ if (s.table_pos.toString().trim()!=='') {
+
+ 
+        
+            
+  
+  
+          
+  
+            let pos = s.table_pos.split('$');
+  
+            if (pos.length!==2) good = false;
+  
+            if (good) {
+  
+              if (pos[0].length>2||pos[0].length===0) good = false;
+  
+            }
+  
+            if (good) {
+  
+             if (pos[0][0]<='A'||pos[0][0]>='Z') good = false;
+  
+            }
+  
+            if (good&&pos[0].length===2) {
+  
+              if (pos[0][1]<='A'||pos[0][1]>='Z') good = false;
+  
+            } 
+  
+           if (good&&parseFloat(pos[1])>=0) {
+  
+            shift_x = getColumnIndex(pos[0]); 
+            
+            shift_y = parseFloat(pos[1]);
+  
+  
+           }
+          
+  
+
+          } else good =false;
+  
+ 
+
+
+ 
+ if (good&&table?.table_data) for (let i=0;i<table.table_data.length;i++) {
+       
+   if (table.table_data[i].plist_no!==k) continue;
+   
+   
+   if (table.table_data[i].x<min_x) min_x = table.table_data[i].x;
+   if (table.table_data[i].y<min_y) min_y = table.table_data[i].y;
+
+
+ }
+
+
+
+
+
+ 
+ let ttt =  (table?.table_data)?table.table_data.filter(o=>o.plist_no===k&&o.value!==null).map(o => ({ ...o })):null
+
+
+
+
+
+
+ if (ttt) for  (let i=0;i<ttt.length;i++) {
+
+     if (good) {
+
+       ttt[i].x = ttt[i].x - min_x + shift_x
+
+       ttt[i].y = ttt[i].y - min_y + shift_y-1
+
+
+
+     }
+  
+     if (sh.table_pres.toString().trim()!=='') {
+          
+          let rrr = ttt[i].value;  
+               
+          if (rrr.toString().trim()!==''&&isNumeric(rrr.toString()))
+              rrr=parseFloat(rrr).toFixed(parseFloat(sh.table_pres)).toString();
+          
+          ttt[i].value = rrr;
+
+        }
+
+
+ }
 
 
 
@@ -75,6 +195,8 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
               sheet={sheet}
              rowIndex={rowIdx}
               onRowResizeStart={handleRowResizeStart}
+              grid_visibility={grid_visibility}
+              table = {ttt}
             />
          ))}
 
@@ -138,6 +260,8 @@ const ExcelApp = () => {
 
 
   const sheet = useSelector(state=>state.sheet.selected_sheet);
+
+
   
  
 

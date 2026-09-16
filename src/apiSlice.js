@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { update_spinner_status } from './layoutSlice';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 
 
 
@@ -15,12 +16,13 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
 
   if (args.url) {
 
-   // console.log(state.config.)
-
+   
    //return {data:null};
 return fetchBaseQuery({ baseUrl })(args, api, extraOptions);
 
   } 
+
+  if (args===skipToken) return {data:null}
 
   if (args.indexOf('bngplotsets.sql')===0) {
 
@@ -173,7 +175,7 @@ export const apiSlice = createApi({
     }),
 
     getEpuraTemplate: builder.query({
-      query: (plot_no) => `diagtemplate_new.sql?PlotNo=${plot_no}`,
+      query: ({plot_no, ver}) => `diagtemplate_new.sql?PlotNo=${plot_no}&Ver=${ver}`,
       transformResponse: (response) =>{
          
 
@@ -228,10 +230,13 @@ export const apiSlice = createApi({
 
     
 
- getEpuraData: builder.query({
+ /*getEpuraData: builder.query({
   query: ({plot_no, dates}) => `PlotData.sql?PlotNo=${plot_no}&PlotDates='${dates}'`,
 
   async onQueryStarted(args, { dispatch, queryFulfilled }) {
+
+    
+
     // Перед запросом — включаем спиннер
     dispatch(update_spinner_status(true));
 
@@ -250,9 +255,32 @@ export const apiSlice = createApi({
  
 
 
+}),*/
+
+getEpuraData: builder.query({
+  query: (arg) => {
+    // Если аргументы пустые — не выполняем запрос
+    if (!arg || !arg.plot_no || !arg.dates || arg.dates.length === 0) {
+      return skipToken;
+    }
+    return `PlotData.sql?PlotNo=${arg.plot_no}&PlotDates='${arg.dates}'`;
+  },
+
+  async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    // Если запрос пропущен — onQueryStarted не вызовется,
+    // значит спиннер не включится. Проверять не нужно.
+    dispatch(update_spinner_status(true));
+    try {
+      await queryFulfilled;
+      dispatch(update_spinner_status(false));
+    } catch (error) {
+      dispatch(update_spinner_status(false));
+      console.error('Ошибка получения данных:', error);
+    }
+  },
 }),
 
-
+/*
  getEpuraTable: builder.query({
  
 
@@ -278,7 +306,26 @@ export const apiSlice = createApi({
 
      
 
-  }),
+  }),*/
+
+  getEpuraTable: builder.query({
+  query: ({ plot_no, dates } = {}) =>
+    plot_no != null && dates?.length
+      ? { url: `CalcPlotTable.sql?PlotNo=${plot_no}&PlotDates='${dates}'` }
+      : skipToken,
+
+  async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    dispatch(update_spinner_status(true));
+    try {
+      await queryFulfilled;
+    } catch (error) {
+      console.error('Ошибка получения данных:', error);
+    } finally {
+      dispatch(update_spinner_status(false));
+    }
+  },
+}),
+
    
 
 

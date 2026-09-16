@@ -5,9 +5,10 @@ import {TOTAL_COLS, TOTAL_ROWS} from './consts'
 import {Cell} from './Cell'
 import { ContextMenu } from './ContextMenu';
 
-export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown}) => {
+export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown, grid_visibility, table}) => {
   
   const cells = [];
+
 
 
   let rowHeight = useSelector(state=>get_row_info(state, sheet, rowIndex)).height;
@@ -17,12 +18,39 @@ export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown}) => {
   rowHeight = parseFloat(rowHeight)*parseFloat(cscale);
 
   for (let col = 0; col < TOTAL_COLS; col++) {
-        cells.push(
+
+       //let table_x = -1;
+       //let table_y =-1;
+       let table_val = null;
+
+     
+       
+       let t = (table)?table.find(o=>o.x===col&&o.y===rowIndex):null;
+
+       if (t) {
+
+          
+
+         //table_x = col;
+         //table_y = rowIndex;
+
+       
+
+         table_val = t.value;
+       
+
+       }
+
+       cells.push(
       <Cell
         key={`${rowIndex}-${col}`}
         sheet={sheet}
         x={col}
         y={rowIndex}
+        grid_visibility={grid_visibility}
+        height = {rowHeight}
+        
+        table_info = {table_val}
        
       />
     );

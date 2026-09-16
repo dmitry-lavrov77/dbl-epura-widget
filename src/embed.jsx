@@ -8,6 +8,7 @@ import contextReducer from './contextSlice';
 import layoutReducer, {initialState as layoutInitialState} from './layoutSlice';
 import {apiSlice} from './apiSlice'
 import configReducer from './configSlice';
+import dataReducer from './dataSlice';
 
 
 
@@ -37,7 +38,7 @@ export function init(container, props = {}) {
                             props.plotdates:(!props.mode||props.mode==='edit')?[]:['generated'];
   
   const store = configureStore({
-    reducer: { sheet: sheetReducer, cmenu:contextReducer, layout:layoutReducer,  config:configReducer, [apiSlice.reducerPath]: apiSlice.reducer,},
+    reducer: { sheet: sheetReducer, data:dataReducer, cmenu:contextReducer, layout:layoutReducer,  config:configReducer, [apiSlice.reducerPath]: apiSlice.reducer,},
     preloadedState: {
 
         config:{baseUrl:baseUrl, generated:(!props.mode||props.mode==='edit')?false:true, plotsets:props.plotsets ?? null, plotlists:props.plotlists ?? null, 

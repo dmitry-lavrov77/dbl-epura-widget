@@ -7,7 +7,7 @@ import {measureText} from './graph_math'
 
 
 
-export const Cell = ({sheet, x, y}) => {
+export const Cell = ({sheet, x, y, grid_visibility, height, table_info=null}) => {
   
   const dispatch = useDispatch();
 
@@ -17,24 +17,16 @@ export const Cell = ({sheet, x, y}) => {
 
   const cell_info_left = useSelector(state => get_cell_info(state, sheet, x-1, y));
 
-  //const cell_info_right = useSelector(state => get_cell_info(state, sheet, x+1, y));
-  
   const cell_info_top = useSelector(state => get_cell_info(state, sheet, x, y-1));
   
-  //const cell_info_bottom = useSelector(state => get_cell_info(state, sheet, x, y+1));
-
-  const table_info = useSelector(state => get_table_info(state, sheet, x, y));
 
 
-  
-  const sheets = useSelector(state=>state.sheet.sheets);
+  //const table_info = null;//useSelector(state => get_table_info(state, sheet, x, y));
+
+  //const table = useSelector(state=>state.data.epuraData)
  
-  const the_sheet = sheets.find(o=>o.sheet === sheet)
-
-  
-
-
-
+ 
+ // const table_info = (table) null//table.find(o=>plist_no) 
 
 
   const cellRef=useRef(null)
@@ -48,14 +40,14 @@ export const Cell = ({sheet, x, y}) => {
 
 
 
-  let height =useSelector(state=>get_row_info(state, sheet, y)).height;
+  //let height =useSelector(state=>get_row_info(state, sheet, y)).height;
   
   let width =useSelector(state=>get_col_info(state, sheet, x)).width;
 
   
 
 
-  height = parseFloat(height)*cscale;
+  //height = parseFloat(height)*cscale;
 
   width = parseFloat(width)*cscale;
 
@@ -133,7 +125,7 @@ export const Cell = ({sheet, x, y}) => {
     
  }   
 
-  if (!the_sheet.grid_visibility) {
+  if (!grid_visibility) {
 
 
    cstyle.borderRight ='0'
@@ -193,7 +185,7 @@ export const Cell = ({sheet, x, y}) => {
             span.style.font=cfont; 
             span.textContent=e.target.value; 
             document.body.appendChild(span); 
-            console.log(span.offsetWidth, span); 
+         
             if (e.target.clientWidth<span.offsetWidth+4) inputRef.current.style.width=span.offsetWidth+'px'; 
             else inputRef.current.style.width='100%';
             document.body.removeChild(span); 

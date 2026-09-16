@@ -16,6 +16,10 @@ import {update_left_pane_width, update_right_pane_width, set_epura, toggle_date,
 
 import {load_template} from './sheetSlice'
 
+import {load_data} from './data_manager'
+
+import { setEpuraData } from './dataSlice.jsx';
+
 
 
 
@@ -153,11 +157,12 @@ const DatesSelected = ()=>{
 
 const SilentPane = () =>{
 
-   const dispatch = useDispatch();
+  
+  const dispatch = useDispatch();
 
   const selected = useSelector(state=>state.layout.selected_epura);
 
-  const template = useGetEpuraTemplateQuery((selected)?selected.plot_no:null)
+  const template = useGetEpuraTemplateQuery({plot_no:(selected)?selected.plot_no:null, ver:1})
 
   const plot_set = useGetPlotListQuery();
 
@@ -174,6 +179,8 @@ const SilentPane = () =>{
 
   }  }, [template, plot_set])
   
+
+ 
   
 
   return <></>
@@ -195,14 +202,75 @@ const RightPane = () =>{
   const dispatch = useDispatch();
 
 
-  const template = useGetEpuraTemplateQuery((selected)?selected.plot_no:null)
-
-
+  const template = useGetEpuraTemplateQuery({plot_no:(selected)?selected.plot_no:null, ver:1})
 
   const plot_set = useGetPlotListQuery();
 
+  const plot_set2 = useGetPlotSetQuery();
+
+  const dates = useSelector(state => state.layout.dates_selected)
+
+  const plot_data = useGetEpuraDataQuery({plot_no:selected.plot_no, dates:dates.toString()});
+
+  const plot_table = useGetEpuraTableQuery({plot_no:selected.plot_no, dates:dates.toString()});
+
+  const diagram_list = useGetDiagramListQuery();
+   
+  const plot_line = useGetPlotLineQuery();
+  
  
 
+
+ 
+  
+
+
+  useEffect(()=>{
+
+
+     const load = async() =>{
+  
+
+         //const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
+              
+         let res = await load_data(selected.plot_no,plot_data.data,plot_table.data,plot_line.data,diagram_list.data, plot_set2.data);
+  
+         dispatch(setEpuraData(res))
+                
+         
+
+        
+  
+          
+      //    if (diag_info.diagram_id==-1) dispatch(set_diag_data({sheet:sheet, idx:idx, data:null, table_data:null}))
+         
+  
+      //    else {
+           
+      //      let iii = res.data.findIndex(o=>o.diag_no===parseFloat(diag_info.diagram_id));
+  
+            
+  
+      //      if (iii!==-1&&iii<res.data.length) {
+           
+              
+              
+       //       dispatch(set_diag_data({sheet:sheet, idx:idx, data:res.data[iii], table_data:(res.table_data[0])?res.table_data:null}))
+          
+       //     }
+          
+       //   }
+      
+          
+    }
+
+
+
+    if (dates&&dates.length&&plot_data.data&&plot_table.data&&plot_set2.data&&diagram_list.data&&plot_line.data) load()  
+    else  dispatch(setEpuraData(null))       
+
+
+  }, [dates, plot_data, selected, plot_table,plot_line,diagram_list, plot_set2] )
 
 
 
@@ -222,6 +290,11 @@ const RightPane = () =>{
 
 
   }, [template, plot_set])
+
+  
+
+
+
 
   return (<div style={{display:'flex', flex:'1', flexDirection:'column', maxWidth:`${size+'%'}`, minWidth:`${size+'%'}`}} >
 

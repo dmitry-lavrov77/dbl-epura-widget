@@ -189,11 +189,13 @@ const loadTemplate = (template, the_list) => {
 
      
           if  (diags[_key].table.show) sheets[i].table_selected =  the_list[0].plist_no;
-
+            
 
           sheets[i].table_pos = diags[_key].table.pos;
 
           sheets[i].table_pres = diags[_key].table.pres;
+
+          
 
        }  
 
@@ -347,6 +349,10 @@ const loadTemplate = (template, the_list) => {
      sheets:[{sheet:0, title:'Лист1', edited:false, grid_visibility:true,  table_selected:-1, table_pos:'', table_pres:''}],
      last_created_sheet:0,
      selected_object:null,
+
+     _selected_key: '0_0_0',
+    
+     _edit_key: null,
     
      
      ////////////////////////////////////////
@@ -602,6 +608,7 @@ const sheetSlice = createSlice({
 
     update_grid_visibility:(state,action)=>{
 
+
      let s =  state.sheets.find(o=>o.sheet===state.selected_sheet) 
      s.grid_visibility = action.payload.grid_visibility;
 
@@ -672,58 +679,7 @@ const sheetSlice = createSlice({
 
       //let the_sheet = state.sheets.find(o=>o.sheet === action.payload.sheet);
 
-      /*
-      
-      let shift_x = 0;
-      
-      let shift_y = 0;
-
-      let good = true;
-
-      if (the_sheet&&the_sheet.table_pos.toString().trim()!==''){
-
-        let pos = the_sheet.table_pos.split('$');
-
-        if (pos.length!==2) good = false;
-
-        if (good) {
-
-          if (pos[0].length>2||pos[0].length===0) good = false;
-
-
-        }
-
-        if (good) {
-
-          if (pos[0][0]<='A'||pos[0][0]>='Z') good = false;
-
-
-        }
-
-        if (good&&pos[0].length===2) {
-
-          if (pos[0][1]<='A'||pos[0][1]>='Z') good = false;
-
-
-
-        } 
-
-        if (good&&parseFloat(pos[1])>=0) {
-
-          shift_x = getColumnIndex(pos[0]); 
-          
-          shift_y = parseFloat(pos[1]);
-
-
-    
-
-        }
-        
-
-      }
-
-      */ 
-
+     
       let key = action.payload.sheet.toString()+'_'+action.payload.idx.toString();
 
       state.diags[key].data = action.payload.data;
@@ -733,25 +689,7 @@ const sheetSlice = createSlice({
       
       //let min_x=0; 
       //let min_y=0;
-      /*
-      if (res&&shift_x&&shift_y&&action.payload.table_data.length) {
-
-        min_x = action.payload.table_data[0].x
-        
-        min_y = action.payload.table_data[0].y
-        
-        for (let i=1; i<action.payload.table_data.length;i++){
-
-           if (action.payload.table_data[i].x<min_x) min_x = action.payload.table_data[i].x;
-
-           if (action.payload.table_data[i].y<min_y) min_y = action.payload.table_data[i].y;
-           
-
-
-          }
-
-
-      } */
+     
       
       if (res)
       for (let i=0; i<action.payload.table_data.length;i++) {
@@ -974,7 +912,7 @@ const sheetSlice = createSlice({
 
       }
 
-      let keys = get_cells_keys(/*state.selected_sheet*/ii.toString());
+      let keys = get_cells_keys(ii.toString());
 
       for (let i =0; i<keys.length; i++) {
       
@@ -982,7 +920,7 @@ const sheetSlice = createSlice({
 
       }
 
-      keys = get_columns_keys(/*state.selected_sheet*/ii.toString()) 
+      keys = get_columns_keys(ii.toString()) 
 
        
 
@@ -992,7 +930,7 @@ const sheetSlice = createSlice({
 
       }
 
-      keys =get_rows_keys(/*state.selected_sheet*/ii.toString())
+      keys =get_rows_keys(ii.toString())
       
      
 
@@ -1048,11 +986,11 @@ const sheetSlice = createSlice({
 
 
 
-     delete state.tselected_cells[/*state.selected_sheet*/ii.toString()];
+     delete state.tselected_cells[ii.toString()];
 
-     delete state.cells_in_range[/*state.selected_sheet*/ii.toString()]; 
+     delete state.cells_in_range[ii.toString()]; 
      
-     delete state.selected_ranges[/*state.selected_sheet*/ii.toString()];
+     delete state.selected_ranges[ii.toString()];
 
      state.is_selecting = false;
 
@@ -1109,7 +1047,7 @@ const sheetSlice = createSlice({
      state.selected_ranges[the_sheet.toString()] =state.tselected_ranges[the_sheet.toString()]
      
 
-     let i = state.sheets.findIndex(o=>o.sheet === ii/*state.selected_sheet*/);
+     let i = state.sheets.findIndex(o=>o.sheet === ii);
 
       state.selected_sheet = the_sheet;
      
@@ -1661,9 +1599,22 @@ const sheetSlice = createSlice({
 
   selectors:{
 
+    get_grid_visibility:(state,sheet) =>{
+
+      let s =  state.sheets.find(o=>o.sheet===sheet)
+
+     
+
+      if (s) return s.grid_visibility;
+
+
+    },
+
     get_cell_info:(state, sheet, x, y) => state.cells[sheet.toString()+'_'+x.toString()+'_'+y.toString()],
 
     get_table_info:(state, sheet, x, y) =>{
+
+     // return null;  
 
       let rr = Object.values(state.diags);
 
@@ -1916,6 +1867,6 @@ export const {
   
 } = sheetSlice.actions;
 
-export const {  get_table_info, get_cell_info, get_mcell_info, get_row_info, get_col_info, get_selected_cell, get_row_heights, get_pic_info, get_diag_info} = sheetSlice.selectors;
+export const {  get_grid_visibility, get_table_info, get_cell_info, get_mcell_info, get_row_info, get_col_info, get_selected_cell, get_row_heights, get_pic_info, get_diag_info} = sheetSlice.selectors;
 
 export default sheetSlice.reducer;
