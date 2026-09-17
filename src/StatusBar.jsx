@@ -181,6 +181,7 @@ export const StatusBar = () => {
     
     let tmpl = structuredClone(store.getState()).sheet;
 
+     let dta = structuredClone(store.getState()).data;
    
 
 
@@ -429,7 +430,12 @@ export const StatusBar = () => {
 
         let diag0 = { }
 
-        let ttt = diags[uu].data;
+        console.log(dta)
+
+        let rrr = (dta?.epuraData?.data)?dta.epuraData.data.find(o=>o.diag_no === diags[uu].diagram_id):null;
+       
+       
+        let ttt = rrr;//diags[uu].data;
 
 
         let base_points = [];
@@ -437,7 +443,7 @@ export const StatusBar = () => {
    
          
 
-         for (let m=0;m<ttt.points.length; m++) {
+        if (ttt) for (let m=0;m<ttt.points.length; m++) {
 
               for (let l =0; l< ttt.points[m].length;l++) {
 
@@ -743,8 +749,45 @@ export const StatusBar = () => {
 
 
         let tcells = {};
+
+        //console.log('SHEETS', tmpl.sheets)
+
+        if (dta?.epuraData?.table_data) {
+
+          for (let h=0;h<dta.epuraData.table_data.length;h++) {
+
+             console.log(dta.epuraData.table_data[h])
+
+             let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
+
+             if (xx){
+
+
+               let  rrr = dta.epuraData.table_data[h].value; 
+
+               if (xx.table_pres.toString().trim()!==''&&rrr!==null) {
+                         
+                         
+                              
+                         if (rrr.toString().trim()!==''&&isNumeric(rrr.toString()))
+                             rrr=parseFloat(rrr).toFixed(parseFloat(xx.table_pres)).toString();
+                         
+                          
+                }
+
+
+
+                tcells[xx.sheet.toString()+'_'+dta.epuraData.table_data[h].x.toString()+'_'+dta.epuraData.table_data[h].y.toString()] = rrr;
+
+             }
+
+
+          }
+
+
+        }
        
-       if (diags.length) {
+       /*if (diags.length) {
 
           
     
@@ -870,7 +913,7 @@ export const StatusBar = () => {
           }
           
 
-       }
+       }*/
 
        
       

@@ -1568,8 +1568,15 @@ const sheetSlice = createSlice({
   
   update_cell_property:(state, action) =>{
 
+    if (state.cells_in_range) {
 
-    let _key  = action.payload.sheet.toString()+'_'+action.payload.x.toString()+'_'+action.payload.y.toString();
+      let sheet_cells = state.cells_in_range[action.payload.sheet];
+
+      for (let i=0;i<sheet_cells.length;i++) {
+
+
+
+           let _key  = action.payload.sheet.toString()+'_'+sheet_cells[i].x.toString()+'_'+sheet_cells[i].y.toString();
 
   
     if (action.payload.field==='fontFamily') state.cells[_key].font.font_name = action.payload.value;
@@ -1583,6 +1590,15 @@ const sheetSlice = createSlice({
                                                    state.cells[_key].extra_border = false;
                                                  else  state.cells[_key].extra_border = true;
 
+
+
+
+      }
+
+    } 
+      
+  
+   
    
   
 
