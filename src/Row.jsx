@@ -5,7 +5,44 @@ import {TOTAL_COLS, TOTAL_ROWS} from './consts'
 import {Cell} from './Cell'
 import { ContextMenu } from './ContextMenu';
 
-export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown, grid_visibility, table}) => {
+
+
+export const Row = React.memo(({ sheet, rowIndex,  grid_visibility, tableMap }) => {
+
+  const rowHeight = useSelector(state => get_row_info(state, sheet, rowIndex)).height;
+  const cscale = useSelector(state => state.layout.cscale);
+  const scaledHeight = parseFloat(rowHeight) * parseFloat(cscale);
+
+  
+
+  const cells = [];
+  for (let col = 0; col < TOTAL_COLS; col++) {
+    const table_val = tableMap
+      ? (tableMap.get(col + '_' + rowIndex) ?? null)
+      : null;
+
+    cells.push(
+      <Cell
+        key={`${rowIndex}-${col}`}
+        sheet={sheet}
+        x={col}
+        y={rowIndex}
+        grid_visibility={grid_visibility}
+        height={scaledHeight}
+        table_info={table_val}
+      />
+    );
+  }
+
+  return (
+    <div className="data-row" style={{ height: scaledHeight }}>
+      <div className="row-cells">{cells}</div>
+    </div>
+  );
+});
+
+
+/*export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown, grid_visibility, table}) => {
   
   const cells = [];
 
@@ -57,16 +94,11 @@ export const Row = ({ sheet,  rowIndex, onRowResizeStart, onCellMouseDown, grid_
   }
   return (
     <div className="data-row" style={{ height: rowHeight }}>
-      {/* <div className="row-header" style={{ height: rowHeight }}>
-        {rowIndex + 1}
-        <div className="row-resize-handle" onMouseDown={(e) => onRowResizeStart(e, rowIndex)} />
-        <div className={'row-header-rail'} style={{ display:'none', height:'1px', backgroundColor:'black',position:'absolute', left:'0', top:'0px', width:'100vw'}}></div> 
-        <div className={'row-header-rail'} style={{ display:'none', height:'1px', backgroundColor:'black',position:'absolute', left:'0', bottom:'0px', width:'100vw'}}></div> 
-      </div> */}
+      
       <div className="row-cells">{cells}</div>
     </div>
   );
-};
+};*/
 
 export const RowHeaders = ({sheet, onRowResizeStart, ref}) =>{
 

@@ -4,10 +4,12 @@ import { useRef, useEffect } from 'react';
 import {get_row_info, get_col_info, drag_on_cell, get_table_info} from './sheetSlice'
 import {show_menu} from './contextSlice'
 import {measureText} from './graph_math'
+import React from 'react';
 
 
 
-export const Cell = ({sheet, x, y, grid_visibility, height, table_info=null}) => {
+export const Cell = React.memo(({sheet, x, y, grid_visibility, height, table_info=null}) => {
+//export const Cell = ({sheet, x, y, grid_visibility, height, table_info=null}) => {
   
   const dispatch = useDispatch();
 
@@ -19,7 +21,7 @@ export const Cell = ({sheet, x, y, grid_visibility, height, table_info=null}) =>
 
   const cell_info_top = useSelector(state => get_cell_info(state, sheet, x, y-1));
   
-
+  
 
   //const table_info = null;//useSelector(state => get_table_info(state, sheet, x, y));
 
@@ -326,4 +328,4 @@ export const Cell = ({sheet, x, y, grid_visibility, height, table_info=null}) =>
    
     </div>
   );
-};
+});

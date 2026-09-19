@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {Cell} from './Cell'
 import {Row, RowHeaders} from './Row'
 import { TOTAL_ROWS} from './consts'
-import {update_col_width, update_row_height, get_col_info, stop_selecting, get_grid_visibility} from './sheetSlice'
+import {update_col_width, update_row_height,  stop_selecting, get_grid_visibility} from './sheetSlice'
 import {Toolbar} from  './Toolbar'
 import {StatusBar} from  './StatusBar'
 import {ColumnHeaders} from  './ColumnHeaders'
@@ -20,7 +19,7 @@ import './Spreadsheet.css';
 
 
 
-const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
+const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
 
  const gridContainerRef = useRef(null);
  
@@ -47,22 +46,91 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
 
  const table = useSelector(state=>state.data.epuraData)
 
- 
+ const k = parseFloat(sh.table_selected);
 
- let k = parseFloat(sh.table_selected)
+  const { ttt, tableMap } = useMemo(() => {
+    const raw = table?.table_data;
+    if (!raw) return { ttt: null, tableMap: null };
 
- let min_x =100000; 
+    let min_x = 100000;
+    let min_y = 100000;
+    let shift_x = 0;
+    let shift_y = 0;
+    let good = true;
 
- let min_y =100000; 
+    // --- parse table position (e.g. "B$3") ---
+    if (sh.table_pos.toString().trim() !== '') {
+      const pos = sh.table_pos.split('$');
+      if (pos.length !== 2) good = false;
 
-  let shift_x = 0;
-  let shift_y = 0;
+      if (good && (pos[0].length > 2 || pos[0].length === 0)) good = false;
+      if (good && (pos[0][0] < 'A' || pos[0][0] > 'Z')) good = false;
+      if (good && pos[0].length === 2 && (pos[0][1] < 'A' || pos[0][1] > 'Z')) good = false;
+
+      if (good && parseFloat(pos[1]) >= 0) {
+        shift_x = getColumnIndex(pos[0]);
+        shift_y = parseFloat(pos[1]);
+      }
+    } else {
+      good = false;
+    }
+
+    // --- find min x/y for the selected table list ---
+    if (good) {
+      for (let i = 0; i < raw.length; i++) {
+        if (raw[i].plist_no !== k) continue;
+        if (raw[i].x < min_x) min_x = raw[i].x;
+        if (raw[i].y < min_y) min_y = raw[i].y;
+      }
+    }
+
+    // --- filter, clone, transform ---
+    const tttArr = raw
+      .filter(o => o.plist_no === k && o.value !== null)
+      .map(o => ({ ...o }));
+
+    const tablePres = sh.table_pres.toString().trim();
+
+    for (let i = 0; i < tttArr.length; i++) {
+      if (good) {
+        tttArr[i].x = tttArr[i].x - min_x + shift_x;
+        tttArr[i].y = tttArr[i].y - min_y + shift_y - 1;
+      }
+      if (tablePres !== '') {
+        let rrr = tttArr[i].value;
+        if (rrr.toString().trim() !== '' && isNumeric(rrr.toString())) {
+          rrr = parseFloat(rrr).toFixed(parseFloat(tablePres)).toString();
+        }
+        tttArr[i].value = rrr;
+      }
+    }
+
+    // --- build O(1) lookup map ---
+    const map = new Map();
+    for (const item of tttArr) {
+      map.set(item.x + '_' + item.y, item.value);
+    }
+
+    return { ttt: tttArr, tableMap: map };
+  }, [table?.table_data, k, sh.table_pres, sh.table_pos]);
+
+  // ... rest of component (sync_scroll, r
+
+
+ //let k = parseFloat(sh.table_selected)
+
+ //let min_x =100000; 
+
+ //let min_y =100000; 
+
+ // let shift_x = 0;
+ // let shift_y = 0;
   
- let good = true;
+ //let good = true;
  
- let s = sh
+ //let s = sh
 
- if (s.table_pos.toString().trim()!=='') {
+ /*if (s.table_pos.toString().trim()!=='') {
 
  
         
@@ -129,10 +197,10 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
  let ttt =  (table?.table_data)?table.table_data.filter(o=>o.plist_no===k&&o.value!==null).map(o => ({ ...o })):null
 
 
+*/
 
 
-
-
+/*
  if (ttt) for  (let i=0;i<ttt.length;i++) {
 
      if (good) {
@@ -157,12 +225,13 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
         }
 
 
- }
+ }*/
 
 
+ 
 
 
- const sync_scroll = (e) => {
+ const sync_scroll = useCallback((e) => {
 
  
   if (rowHeadersRef.current) {
@@ -171,7 +240,7 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
   if (colHeadersRef.current) {
     colHeadersRef.current.scrollLeft = e.target.scrollLeft;
   }
-};
+}, []);
 
  
 
@@ -194,9 +263,10 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
                key={rowIdx}
               sheet={sheet}
              rowIndex={rowIdx}
-              onRowResizeStart={handleRowResizeStart}
+              // onRowResizeStart={handleRowResizeStart}
               grid_visibility={grid_visibility}
-              table = {ttt}
+              tableMap = {tableMap}
+              // height={parseFloat(rowHeights[rowIdx]) * parseFloat(cscale)}
             />
          ))}
 
@@ -253,7 +323,7 @@ const Sheet = ({sheet = 0, handleColumnResizeStart, handleRowResizeStart}) =>{
   )
 
 
-}
+})
 
 
 const ExcelApp = () => {
@@ -273,9 +343,27 @@ const ExcelApp = () => {
 
  
 
- 
+ const handleRowResizeStart = useCallback((e, idx, cscale) => {
+     resizeObject.current = {
+      sheet:sheet,
+      idx:idx,
+      tpe:'row',
+      obj:e.target.parentElement,
+      startY: e.clientY,
+      startHeight:e.target.parentElement.clientHeight,
+      cscale:cscale
 
- const handleRowResizeStart = (e, idx, cscale) => {
+    }
+
+    let rails = e.target.parentElement.querySelectorAll('.row-header-rail');
+
+    for (let i =0; i<rails.length;i++) rails[i].style.display=''; 
+
+    isResizing.current = true;
+
+}, [sheet]);
+
+ /*const handleRowResizeStart = (e, idx, cscale) => {
 
      
 
@@ -296,13 +384,11 @@ const ExcelApp = () => {
 
     isResizing.current = true;
 
-  };
+  };*/
 
 
-  const handleColumnResizeStart = (e, idx, cscale) =>{
-
-   
-    resizeObject.current = {
+  const handleColumnResizeStart = useCallback((e, idx, cscale) => {
+  resizeObject.current = {
 
       sheet:sheet,
       idx:idx,
@@ -324,8 +410,8 @@ const ExcelApp = () => {
     for (let i =0; i<rails.length;i++) rails[i].style.display=''; 
 
     isResizing.current = true;
+}, [sheet]);
 
-  }
 
 
 
@@ -333,7 +419,7 @@ const ExcelApp = () => {
  
 
   
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback ((e) => {
 
   
    
@@ -349,10 +435,10 @@ const ExcelApp = () => {
       const newHeight = Math.max(10, resizeObject.current.startHeight + (e.clientY- resizeObject.current.startY));
       resizeObject.current.obj.style.height = newHeight +'px'; 
     }
-  };
+  }, [dispatch]);
 
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback (() => {
   
     isResizing.current = false;
 
@@ -384,7 +470,7 @@ const ExcelApp = () => {
     }
     
       
-  };
+  }, [dispatch]);
 
 
   useEffect(() => {
@@ -399,7 +485,7 @@ const ExcelApp = () => {
   return (
     <div className="spreadsheet on-print">
       <Toolbar  />
-      <Sheet sheet={sheet} handleColumnResizeStart={handleColumnResizeStart} handleRowResizeStart={handleRowResizeStart}></Sheet>
+      <Sheet key={sheet} sheet={sheet} handleColumnResizeStart={handleColumnResizeStart} handleRowResizeStart={handleRowResizeStart}></Sheet>
       <StatusBar />
      
      </div>

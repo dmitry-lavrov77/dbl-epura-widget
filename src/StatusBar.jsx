@@ -430,7 +430,7 @@ export const StatusBar = () => {
 
         let diag0 = { }
 
-        console.log(dta)
+       
 
         let rrr = (dta?.epuraData?.data)?dta.epuraData.data.find(o=>o.diag_no === diags[uu].diagram_id):null;
        
@@ -750,13 +750,13 @@ export const StatusBar = () => {
 
         let tcells = {};
 
-        //console.log('SHEETS', tmpl.sheets)
+       
 
         if (dta?.epuraData?.table_data) {
 
           for (let h=0;h<dta.epuraData.table_data.length;h++) {
 
-             console.log(dta.epuraData.table_data[h])
+           
 
              let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
 
@@ -1132,9 +1132,9 @@ export const StatusBar = () => {
       {(layout_mode==='edit')&&<div  onClick={()=>do_save()} title='Сохранить изменения' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer'}}><FontAwesomeIcon icon={faFloppyDisk}/></div>}
       
       
-      {!generated&&<div className='no-print' onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'deepskyblue'}`}}><FontAwesomeIcon icon={faEye}/></div>}
+      {!generated&&<div  onClick={()=>{if (layout_mode==='edit') dispatch(set_layout_mode('view')); else dispatch(set_layout_mode('edit'));  }} title='Просмотр' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer', color:`${layout_mode==='view'?'red':'deepskyblue'}`}}><FontAwesomeIcon icon={faEye}/></div>}
       
-        <div className='no-print' onClick={()=>{do_save_excel()}} title='Выгрузить в Excel' className="view-modes" style={{fontSize:'22px', cursor:'pointer', color:'green'}}><FontAwesomeIcon icon={faFileExcel}/></div>
+        <div  onClick={()=>{do_save_excel()}} title='Выгрузить в Excel' className="view-modes no-print" style={{fontSize:'22px', cursor:'pointer', color:'green'}}><FontAwesomeIcon icon={faFileExcel}/></div>
 
         <div className='no-print' style={{  cursor: 'pointer'}} onClick = {()=>dispatch(set_cscale(cscale-0.1))} title="Уменьшить масштаб"><svg class="svg-inline--fa fa-minus" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"></path></svg></div> 
 
