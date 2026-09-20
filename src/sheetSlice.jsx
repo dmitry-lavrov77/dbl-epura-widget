@@ -97,7 +97,9 @@ const loadTemplate = (template, the_list) => {
   if (template.tcells) {
 
 
-    return template
+    return { ...template, _selected_key: template._selected_key || (template.selected_sheet + '_0_0') };
+
+    //return template
 
 
   }
@@ -289,6 +291,7 @@ const loadTemplate = (template, the_list) => {
      sheets:sheets,
      last_created_sheet:0,
      selected_object:null,
+     _selected_key: '0_0_0',
       mlink:{
 
       sheet:-1,
@@ -500,6 +503,7 @@ const sheetSlice = createSlice({
     
      
      state.cells = createEmptyGrid(state.last_created_sheet+1);
+     state._selected_key = (state.last_created_sheet+1) + '_0_0'; //new
      state.columns = createColumns(state.last_created_sheet+1);
      state.rows = createRows(state.last_created_sheet+1);
 
@@ -566,6 +570,8 @@ const sheetSlice = createSlice({
     },
 
     select_object:(state,action) =>{
+
+       
 
         state.selected_object = {
 
@@ -697,14 +703,11 @@ const sheetSlice = createSlice({
          res[action.payload.table_data[i].plist_no.toString()+'_'+
 
          action.payload.table_data[i].x.toString()+
-         
-         //(shift_x-min_x+parseFloat(action.payload.table_data[i].x)).toString()+
-         
+                 
          
          '_'+(parseFloat(action.payload.table_data[i].y)-1).toString()]=action.payload.table_data[i].value
          
-         //(shift_y-min_y+parseFloat(action.payload.table_data[i].y)-1).toString()] = action.payload.table_data[i].value
-
+ 
       }
      
       state.diags[key].table_data  = res;
@@ -865,6 +868,12 @@ const sheetSlice = createSlice({
      state.is_selecting = false;
 
      
+
+     const tsc = state.tselected_cells[sheet];
+     state._selected_key = tsc 
+      ? `${sheet}_${tsc.x}_${tsc.y}` 
+      : `${sheet}_0_0`;
+
 
 
      state.selected_sheet = action.payload.sheet;
@@ -1050,6 +1059,8 @@ const sheetSlice = createSlice({
      let i = state.sheets.findIndex(o=>o.sheet === ii);
 
       state.selected_sheet = the_sheet;
+
+      state._selected_key = the_sheet.toString() + '_' + state.tselected_cells[the_sheet.toString()].x.toString() + '_' + state.tselected_cells[the_sheet.toString()].y.toString();
      
      if (i!==-1) state.sheets.splice(i,1)
 
@@ -1187,6 +1198,8 @@ const sheetSlice = createSlice({
       state.selected_object = null;
 
       state.cells[_key].is_selected = true;
+
+      state._selected_key = _key;  // new
 
       state.cells[_key].edit_value =state.cells[_key].value;
 
@@ -1351,6 +1364,8 @@ const sheetSlice = createSlice({
        if (s) s.is_selected = false;
 
        state.cells[_key].is_selected = true;
+
+       state._selected_key = _key; //new
 
        state.cells[_key].edit_mode = true;
 
@@ -1628,113 +1643,7 @@ const sheetSlice = createSlice({
 
     get_cell_info:(state, sheet, x, y) => state.cells[sheet.toString()+'_'+x.toString()+'_'+y.toString()],
 
-    get_table_info:(state, sheet, x, y) =>{
 
-     // return null;  
-
-      let rr = Object.values(state.diags);
-
-      let s =  state.sheets.find(o=>o.sheet===sheet)
-
-      for (let i =0; i<rr.length;i++) {
-
-        if (rr[i].table_data) {
-
-          let shift_x = 0;
-      
-          let shift_y = 0;
-
-          let good = true;
-
-          if (s&&s.table_pos.toString().trim()!==''){
-
-          let pos = s.table_pos.split('$');
-
-          if (pos.length!==2) good = false;
-
-          if (good) {
-
-            if (pos[0].length>2||pos[0].length===0) good = false;
-
-          }
-
-          if (good) {
-
-           if (pos[0][0]<='A'||pos[0][0]>='Z') good = false;
-
-          }
-
-          if (good&&pos[0].length===2) {
-
-            if (pos[0][1]<='A'||pos[0][1]>='Z') good = false;
-
-          } 
-
-         if (good&&parseFloat(pos[1])>=0) {
-
-          shift_x = getColumnIndex(pos[0]); 
-          
-          shift_y = parseFloat(pos[1]);
-
-
-         }
-        
-
-       } else good =false;
-         let min_x ='first'; let min_y ='first'; 
-
-         if (good) {
-
-           let kk = Object.keys(rr[i].table_data);
-
-        
-          
-          for (let jj=0;jj<kk.length;jj++) {
-
-            if (kk[jj].split('_')[0]===s.table_selected.toString()){
-
-
-              if (min_x==='first') min_x = parseFloat(kk[jj].split('_')[1]);
-              else if (parseFloat(kk[jj].split('_')[1])<min_x) min_x = parseFloat(kk[jj].split('_')[1])
-
-              if (min_y==='first') min_y = parseFloat(kk[jj].split('_')[2]);
-              else if (parseFloat(kk[jj].split('_')[2])<min_y) min_y = parseFloat(kk[jj].split('_')[2])
-              
-
-
-            }
-             
-            //if (rr[i].table_data[kk[jj]]&&)
-
-          }
-
-        }
-
-
-          if (min_x ==='first') min_x = 0;
-      
-          if (min_y ==='first') min_y = 0;
-
-          if (shift_x!==0) shift_x = min_x-parseFloat(shift_x);
-          if (shift_y!==0) shift_y = min_y-parseFloat(shift_y)+1;
-          
-
-          let rrr =  rr[i].table_data[s.table_selected.toString()+'_'+(parseFloat(x)+shift_x).toString()+'_'+(parseFloat(y)+shift_y).toString()]
-
-
-          if (s.table_pres.toString().trim()!=='') {
-           
-            if (rrr&&rrr.toString().trim()!==''&&isNumeric(rrr.toString())) rrr=parseFloat(rrr).toFixed(parseFloat(s.table_pres)).toString();
-          }
-          return rrr
-
-        } else return null;
-
-
-      }
-
-
-    },
 
     
     get_row_info: (state, sheet, idx) => {
@@ -1797,7 +1706,9 @@ const sheetSlice = createSlice({
     
     get_col_info: (state, sheet, idx) => state.columns[sheet.toString()+'_'+idx.toString()],
 
-    get_selected_cell:(state, sheet)=>{
+   
+   
+   /* get_selected_cell:(state, sheet)=>{
       
       let s =Object.values(state.cells).find(child => child.sheet===sheet&&child.is_selected === true)
 
@@ -1806,11 +1717,15 @@ const sheetSlice = createSlice({
       else return null;
 
 
-    }
+    }*/
 
     
  
-    
+    get_selected_cell:(state, sheet)=>{   //new
+  if (!state._selected_key) return null;
+  const cell = state.cells[state._selected_key];
+  return (cell && cell.sheet === sheet) ? cell : null;
+}
     
 
   }
@@ -1883,6 +1798,6 @@ export const {
   
 } = sheetSlice.actions;
 
-export const {  get_grid_visibility, get_table_info, get_cell_info, get_mcell_info, get_row_info, get_col_info, get_selected_cell, get_row_heights, get_pic_info, get_diag_info} = sheetSlice.selectors;
+export const {  get_grid_visibility, get_cell_info, get_mcell_info, get_row_info, get_col_info, get_selected_cell, get_row_heights, get_pic_info, get_diag_info} = sheetSlice.selectors;
 
 export default sheetSlice.reducer;

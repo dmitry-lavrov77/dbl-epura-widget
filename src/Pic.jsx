@@ -346,9 +346,16 @@ const topRightResizeStyle = {
     paddingRight: '5px',
   };
 
+   
+
     return (
 
-    <div className={is_selected&&layout_mode==='edit'?'active-animation':''} ref={windowRef} style={outerStyle} onClick={()=>{if (!is_selected) dispatch(select_object({tpe:'pic', sheet:sheet, idx:idx}))}}>
+     
+
+    (layout_mode==='edit'||(pic_info.lfle!==null&&pic_info.lfle!==''))&&
+      
+      <div className={is_selected&&layout_mode==='edit'?'active-animation':''} ref={windowRef} style={outerStyle} onClick={()=>{if (!is_selected) dispatch(select_object({tpe:'pic', sheet:sheet, idx:idx}))}}>
+      
       {(layout_mode==='edit')&&<div style={topLeftResizeStyle} onMouseDown={(e) => startDrag(e, 'tl')} />}
       {(layout_mode==='edit')&&<div style={topRightResizeStyle} onMouseDown={(e) => startDrag(e, 'tr')} />}
       {(layout_mode==='edit')&&<div style={bottomLeftResizeStyle} onMouseDown={(e) => startDrag(e, 'bl')} />}
@@ -372,9 +379,11 @@ const topRightResizeStyle = {
 
       </div>
     </div>
+  
+  )
 
-
-    )
+     
+    
 
 
 

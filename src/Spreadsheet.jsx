@@ -48,7 +48,7 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
 
  const k = parseFloat(sh.table_selected);
 
-  const { ttt, tableMap } = useMemo(() => {
+  const { tableMap } = useMemo(() => {
     const raw = table?.table_data;
     if (!raw) return { ttt: null, tableMap: null };
 
@@ -92,9 +92,14 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
     const tablePres = sh.table_pres.toString().trim();
 
     for (let i = 0; i < tttArr.length; i++) {
+
+      tttArr[i].x = tttArr[i].x-1
+
+      tttArr[i].y = tttArr[i].y-1
+
       if (good) {
-        tttArr[i].x = tttArr[i].x - min_x + shift_x;
-        tttArr[i].y = tttArr[i].y - min_y + shift_y - 1;
+        tttArr[i].x = tttArr[i].x - min_x + 1 + shift_x;
+        tttArr[i].y = tttArr[i].y - min_y + shift_y;
       }
       if (tablePres !== '') {
         let rrr = tttArr[i].value;
@@ -114,118 +119,7 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
     return { ttt: tttArr, tableMap: map };
   }, [table?.table_data, k, sh.table_pres, sh.table_pos]);
 
-  // ... rest of component (sync_scroll, r
 
-
- //let k = parseFloat(sh.table_selected)
-
- //let min_x =100000; 
-
- //let min_y =100000; 
-
- // let shift_x = 0;
- // let shift_y = 0;
-  
- //let good = true;
- 
- //let s = sh
-
- /*if (s.table_pos.toString().trim()!=='') {
-
- 
-        
-            
-  
-  
-          
-  
-            let pos = s.table_pos.split('$');
-  
-            if (pos.length!==2) good = false;
-  
-            if (good) {
-  
-              if (pos[0].length>2||pos[0].length===0) good = false;
-  
-            }
-  
-            if (good) {
-  
-             if (pos[0][0]<='A'||pos[0][0]>='Z') good = false;
-  
-            }
-  
-            if (good&&pos[0].length===2) {
-  
-              if (pos[0][1]<='A'||pos[0][1]>='Z') good = false;
-  
-            } 
-  
-           if (good&&parseFloat(pos[1])>=0) {
-  
-            shift_x = getColumnIndex(pos[0]); 
-            
-            shift_y = parseFloat(pos[1]);
-  
-  
-           }
-          
-  
-
-          } else good =false;
-  
- 
-
-
- 
- if (good&&table?.table_data) for (let i=0;i<table.table_data.length;i++) {
-       
-   if (table.table_data[i].plist_no!==k) continue;
-   
-   
-   if (table.table_data[i].x<min_x) min_x = table.table_data[i].x;
-   if (table.table_data[i].y<min_y) min_y = table.table_data[i].y;
-
-
- }
-
-
-
-
-
- 
- let ttt =  (table?.table_data)?table.table_data.filter(o=>o.plist_no===k&&o.value!==null).map(o => ({ ...o })):null
-
-
-*/
-
-
-/*
- if (ttt) for  (let i=0;i<ttt.length;i++) {
-
-     if (good) {
-
-       ttt[i].x = ttt[i].x - min_x + shift_x
-
-       ttt[i].y = ttt[i].y - min_y + shift_y-1
-
-
-
-     }
-  
-     if (sh.table_pres.toString().trim()!=='') {
-          
-          let rrr = ttt[i].value;  
-               
-          if (rrr.toString().trim()!==''&&isNumeric(rrr.toString()))
-              rrr=parseFloat(rrr).toFixed(parseFloat(sh.table_pres)).toString();
-          
-          ttt[i].value = rrr;
-
-        }
-
-
- }*/
 
 
  
@@ -274,7 +168,7 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
 
         
 
-          return <Pic key = {item.sheet.toString()+'_'+item.idx.toString()} sheet={item.sheet} idx={item.idx}></Pic>})}
+            return <Pic key = {item.sheet.toString()+'_'+item.idx.toString()} sheet={item.sheet} idx={item.idx}></Pic>})}
 
            {Object.values(diags).filter(o=>o.sheet===sheet).map((item)=>{
 
@@ -296,30 +190,6 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
     </div>
 
 
-  //  <div className="grid-container" ref={gridContainerRef}>
-  //       <ColumnHeaders  sheet={sheet} onColumnResizeStart={handleColumnResizeStart} />
-  //       <div className="grid-body">
-  //         <div className="row-headers-fixed">
-  //          {Array.from({ length: TOTAL_ROWS }).map((_, rowIdx) => (
-  //           <div key={rowIdx} className="row-header" style={{ height: 24, width: 45 }}>
-  //            {rowIdx + 1}
-  //            <div className="row-resize-handle" onMouseDown={()=>{}} />
-  //           </div>
-  //         ))}
-  //        </div>
-  //        <div className="cells-scroll">
-  //         {Array.from({ length: TOTAL_ROWS }).map((_, rowIdx) => (
-            
-  //           <Row
-  //             key={rowIdx}
-  //             sheet={sheet}
-  //             rowIndex={rowIdx}
-  //             onRowResizeStart={handleRowResizeStart}
-  //            />
-  //         ))}
-  //         </div>
-  //       </div>
-  //     </div>
   )
 
 

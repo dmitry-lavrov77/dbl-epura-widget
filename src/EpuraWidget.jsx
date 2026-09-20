@@ -313,6 +313,7 @@ const RightPane = () =>{
 
 } 
 
+let savedScrollTop =0;
 
 const EpuraList = () => {
 
@@ -325,9 +326,9 @@ const EpuraList = () => {
 
    const diagram_list = useGetDiagramListQuery();
 
-   const plot_list = useGetPlotListQuery();
+   //const plot_list = useGetPlotListQuery();
 
-   
+   const selected = useSelector(state=>state.layout.selected_epura)
 
 
 
@@ -337,20 +338,29 @@ const EpuraList = () => {
 
    const dispatch = useDispatch();
 
-   
+   const scrollRef = useRef(null);
+
+     useEffect(()=>{
+     if (scrollRef.current && savedScrollTop > 0) {
+       scrollRef.current.scrollTop = savedScrollTop;
+     }
+   }, [epura_list.data]);
 
    useEffect(()=>{
 
     if (epura_list.data) {
 
-      dispatch(set_epura({plot_info:epura_list.data[0]})) 
+      //dispatch(set_epura({plot_info:epura_list.data[0]})) 
 
+        if (epura_list.data && (!selected || selected.plot_no === -1)) {
+        dispatch(set_epura({plot_info:epura_list.data[0]}))
+       }
 
     }
 
 
 
-   },[epura_list])
+   },[epura_list, selected])
 
 
    const select_epura = (plot_no)=>{
@@ -365,9 +375,13 @@ const EpuraList = () => {
    }
 
 
+  const handleScroll = (e) => {
+     savedScrollTop = e.target.scrollTop;
+   };
+
    return (
 
-<div style={{flex:1, backgroundColor:'white', overflowY:'auto', overflowX:'hidden'}}>
+<div onScroll={handleScroll} ref={scrollRef} style={{flex:1, backgroundColor:'white', overflowY:'auto', overflowX:'hidden'}}>
         {
 
            (epura_list.data&&plot_line.data&&plot_set.data&&diagram_list.data)?epura_list.data.map(item=><EpuraListItem key={item.plot_no} plot_name={item.plot_name} 
@@ -579,7 +593,7 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
   const generated = useSelector(state=>state.config.generated)
 
-  const spinner_on = useSelector(state=>state.layout.spinner_on)
+  const spinner_on = useSelector(state=>state.layout.spinner_count)
   
 
 
@@ -609,7 +623,9 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
    
 
-    const do_scaffold = async () =>{     
+    const do_scaffold = async () =>{  
+      
+       console.log('SCAFFOLDING')
 
        await scaffold();
 
@@ -636,7 +652,7 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
      (mode_set&&layout_mode!=='')? 
       <div style={{position:'relative', width:'100%', height:'100%', display:'flex', flexDirection:'row'}}>
           
-   {spinner_on&&<div style={{
+   {spinner_on>0&&<div style={{
     position: 'absolute',
     top: 0, left: 0, width: '100%', height: '100%',
     backgroundColor: 'rgba(255,255,255,0.7)',

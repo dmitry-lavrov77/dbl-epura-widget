@@ -24,7 +24,10 @@ export const initialState = {
 
   cscale:1,
 
-  spinner_on:false
+  spinner_on:false,
+  
+  spinner_count:0,
+
 
 }
 
@@ -38,7 +41,10 @@ const layoutSlice = createSlice({
 
       update_spinner_status:(state,action) =>{
 
-        state.spinner_on = action.payload;    
+        if (action.payload===true) state.spinner_count++;
+        else state.spinner_count--;
+
+        //state.spinner_on = action.payload;    
 
       },
 

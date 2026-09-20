@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { select_cell,  edit_mode_on, edit_mode_save, edit_mode_cancel, get_cell_info, edit_value_change } from './sheetSlice';
 import { useRef, useEffect } from 'react';
-import {get_row_info, get_col_info, drag_on_cell, get_table_info} from './sheetSlice'
+import {get_row_info, get_col_info, drag_on_cell} from './sheetSlice'
 import {show_menu} from './contextSlice'
 import {measureText} from './graph_math'
 import React from 'react';
@@ -23,13 +23,7 @@ export const Cell = React.memo(({sheet, x, y, grid_visibility, height, table_inf
   
   
 
-  //const table_info = null;//useSelector(state => get_table_info(state, sheet, x, y));
-
-  //const table = useSelector(state=>state.data.epuraData)
- 
- 
- // const table_info = (table) null//table.find(o=>plist_no) 
-
+  
 
   const cellRef=useRef(null)
   const is_selected = cell_info.is_selected||cell_info.is_in_range;
