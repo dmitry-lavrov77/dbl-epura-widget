@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+/*import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { update_grid_visibility, rename_sheet, set_sheet_list, update_table_pos, update_table_pres } from './sheetSlice';
 import { useGetPlotListQuery } from './apiSlice';
@@ -154,7 +154,7 @@ export const ListProperties = () => {
     <div style={styles.container}>
       <div style={styles.title}>Настройки листа</div>
       <div style={styles.body}>
-        {/* Имя листа */}
+       
         <div style={styles.row}>
           <label style={{ ...styles.label, ...styles.labelInput }}>
             Имя листа:
@@ -168,7 +168,7 @@ export const ListProperties = () => {
           </label>
         </div>
 
-        {/* Отображать сетку */}
+       
         <div style={styles.row}>
           <label style={{ ...styles.label, ...styles.labelCheckbox }}>
             <input
@@ -181,7 +181,7 @@ export const ListProperties = () => {
           </label>
         </div>
 
-        {/* NEW: Select box for lists */}
+       
         <div style={styles.row}>
           <label style={{ ...styles.label, ...styles.labelSelect }}>
             Таблица листа:
@@ -222,7 +222,7 @@ export const ListProperties = () => {
               type="text"
               style={styles.input}
               value={the_sheet?.table_pres || ''}
-              onChange={(e) => handleChange('table_pres', e.target.value)/*handleChange('sheet_title', e.target.value)*/}
+              onChange={(e) => handleChange('table_pres', e.target.value)}
             />
             <span style={styles.hiddenSpan}>undefined</span>
           </label>
@@ -231,6 +231,330 @@ export const ListProperties = () => {
 
         </div>
           
+      </div>
+
+   
+      <style>{`
+        input:focus, select:focus {
+          border-color: #4f7df3 !important;
+          box-shadow: 0 0 0 3px rgba(79,125,243,0.15) !important;
+        }
+        input:hover, select:hover {
+          border-color: #a0aec0 !important;
+        }
+        input[type="checkbox"]:focus {
+          outline: 2px solid #4f7df3;
+          outline-offset: 2px;
+        }
+      `}</style>
+    </div>
+  );
+};*/
+
+
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { update_grid_visibility, rename_sheet, set_sheet_list, update_table_pos, update_table_pres } from './sheetSlice';
+import { useGetPlotListQuery } from './apiSlice';
+
+
+
+// ----- Styles (extended with select style) -----
+const styles = {
+  container: {
+    flex: 1,
+    minHeight: 0,
+    background: '#ffffff',
+    borderRadius: 12,
+    boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    fontSize: 14,
+    overflowY: 'auto',
+  },
+  title: {
+    padding: '18px 22px 14px 22px',
+    fontSize: 17,
+    fontWeight: 600,
+    color: '#1e293b',
+    borderBottom: '1px solid #e9edf2',
+    background: '#fafbfc',
+  },
+  body: {
+    position: 'relative',
+    padding: '16px 22px 20px 22px',
+  },
+  row: {
+    marginBottom: 16,
+    '&:lastChild': { marginBottom: 0 },
+  },
+  label: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: 13,
+    color: '#334155',
+    fontWeight: 500,
+    gap: 10,
+    flexWrap: 'wrap',
+  },
+  labelInput: {
+    justifyContent: 'space-between',
+  },
+  labelCheckbox: {
+    justifyContent: 'flex-start',
+    gap: 8,
+  },
+  labelSelect: {
+    justifyContent: 'space-between',
+  },
+  input: {
+    flex: 1,
+    minWidth: 160,
+    padding: '6px 10px',
+    border: '1px solid #d0d7de',
+    borderRadius: 8,
+    fontSize: 13,
+    color: '#1e293b',
+    outline: 'none',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+    background: '#ffffff',
+  },
+  select: {
+    flex: 1,
+    minWidth: 160,
+    padding: '6px 30px 6px 10px',
+    border: '1px solid #d0d7de',
+    borderRadius: 8,
+    fontSize: 13,
+    color: '#1e293b',
+    outline: 'none',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+    background: '#ffffff url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%235f6b7a\' d=\'M6 8L1 3h10z\'/%3E%3C/svg%3E") no-repeat right 10px center',
+    backgroundSize: 12,
+    appearance: 'none',
+    WebkitAppearance: 'none',
+    cursor: 'pointer',
+  },
+  checkbox: {
+    width: 18,
+    height: 18,
+    cursor: 'pointer',
+    accentColor: '#4f7df3',
+  },
+  hiddenSpan: {
+    display: 'none',
+  },
+  toggleGroup: {
+    display: 'flex',
+    gap: 6,
+    marginBottom: 14,
+  },
+  toggleBtn: {
+    flex: 1,
+    padding: '5px 12px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#d0d7de',
+    borderRadius: 6,
+    background: '#ffffff',
+    fontSize: 12,
+    color: '#334155',
+    cursor: 'pointer',
+    textAlign: 'center',
+    transition: 'all 0.15s',
+    outline: 'none',
+  },
+  toggleBtnActive: {
+    background: '#4f7df3',
+    color: '#ffffff',
+    borderColor: '#4f7df3',
+    fontWeight: 600,
+  },
+  numberInput: {
+    flex: 1,
+    minWidth: 80,
+    padding: '5px 8px',
+    border: '1px solid #d0d7de',
+    borderRadius: 6,
+    fontSize: 13,
+    color: '#1e293b',
+    outline: 'none',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  },
+  inputRow: {
+    display: 'flex',
+    gap: 10,
+    marginBottom: 12,
+  },
+};
+
+// ----- Main Component -----
+export const ListProperties = () => {
+  const dispatch = useDispatch();
+
+  const active_sheet = useSelector((state) => state.sheet.selected_sheet);
+  const sheets = useSelector((state) => state.sheet.sheets);
+  const the_sheet = sheets.find((o) => o.sheet === active_sheet);
+
+  const selected = useSelector(state=>state.layout.selected_epura)
+
+  const plot_set = useGetPlotListQuery();
+
+  const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
+
+  the_list.unshift({plist_name:'не задана', plist_no:-1})
+
+  const handleChange = (field, value) => {
+    if (field === 'grid_visibility')
+      dispatch(update_grid_visibility({ grid_visibility: value }));
+
+    if (field === 'sheet_title')
+      dispatch(rename_sheet({ sheet: active_sheet, title: value }));
+
+    if (field === 'table_pos')
+      dispatch(update_table_pos({ sheet: active_sheet, pos: value }));
+
+    if (field === 'table_pres')
+      dispatch(update_table_pres({ sheet: active_sheet, pos: value }));
+  };
+
+  // Handle select change – updates local state, but you can dispatch here too
+  const handleListChange = (e) => {
+    const value = e.target.value;
+    dispatch(set_sheet_list({ sheet: the_sheet.sheet, table_selected:value }));
+  };
+
+  // Position mode toggle
+  const [positionMode, setPositionMode] = useState('address');
+
+  return (
+    <div style={styles.container}>
+      <div style={styles.title}>Настройки листа</div>
+      <div style={styles.body}>
+        {/* Имя листа */}
+        <div style={styles.row}>
+          <label style={{ ...styles.label, ...styles.labelInput }}>
+            Имя листа:
+            <input
+              type="text"
+              style={styles.input}
+              value={the_sheet?.title || ''}
+              onChange={(e) => handleChange('sheet_title', e.target.value)}
+            />
+            <span style={styles.hiddenSpan}>undefined</span>
+          </label>
+        </div>
+
+        {/* Отображать сетку */}
+        <div style={styles.row}>
+          <label style={{ ...styles.label, ...styles.labelCheckbox }}>
+            <input
+              type="checkbox"
+              style={styles.checkbox}
+              checked={the_sheet?.grid_visibility || false}
+              onChange={(e) => handleChange('grid_visibility', e.target.checked)}
+            />
+            Отображать сетку
+          </label>
+        </div>
+
+        {/* Таблица листа */}
+        <div style={styles.row}>
+          <label style={{ ...styles.label, ...styles.labelSelect }}>
+            Таблица листа:
+            <select
+              style={styles.select}
+              value={the_sheet.table_selected}
+              onChange={handleListChange}
+            >
+              {the_list.map((list) => (
+                <option key={list.plist_no} value={list.plist_no}>
+                  {list.plist_name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {/* Положение */}
+        <div style={styles.row}>
+          <strong style={{ fontSize: 14, color: '#1e293b', display: 'block', marginBottom: 10 }}>
+            Положение
+          </strong>
+
+          {/* Pill toggle */}
+          <div style={styles.toggleGroup}>
+            <button
+              style={{
+                ...styles.toggleBtn,
+                ...(positionMode === 'address' ? styles.toggleBtnActive : {}),
+              }}
+              onClick={() => setPositionMode('address')}
+            >
+              Адрес ячейки
+            </button>
+            <button
+              style={{
+                ...styles.toggleBtn,
+                ...(positionMode === 'offset' ? styles.toggleBtnActive : {}),
+              }}
+              onClick={() => setPositionMode('offset')}
+            >
+              Смещение
+            </button>
+          </div>
+
+          {/* Address mode */}
+          {positionMode === 'address' && (
+            <div style={styles.inputRow}>
+              <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
+                Позиция:
+                <input
+                  type="text"
+                  style={styles.numberInput}
+                  value={the_sheet?.table_pos || ''}
+                  onChange={(e) => handleChange('table_pos', e.target.value)}
+                />
+              </label>
+            </div>
+          )}
+
+          {/* Offset mode */}
+          {positionMode === 'offset' && (
+            <div style={styles.inputRow}>
+              <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
+                Δx:
+                <input
+                  type="number"
+                  style={styles.numberInput}
+                  defaultValue={0}
+                />
+              </label>
+              <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
+                Δy:
+                <input
+                  type="number"
+                  style={styles.numberInput}
+                  defaultValue={0}
+                />
+              </label>
+            </div>
+          )}
+        </div>
+
+        {/* Точность */}
+        <div style={styles.row}>
+          <label style={{ ...styles.label, ...styles.labelInput }}>
+            Точность:
+            <input
+              type="text"
+              style={styles.input}
+              value={the_sheet?.table_pres || ''}
+              onChange={(e) => handleChange('table_pres', e.target.value)}
+            />
+            <span style={styles.hiddenSpan}>undefined</span>
+          </label>
+        </div>
+
       </div>
 
       {/* Global styles for focus/hover */}

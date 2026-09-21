@@ -190,7 +190,7 @@ export const CellProperties = () => {
         {label}:
         <select
           style={styles.select}
-          value={form[field] || ''}
+          value={form[field] ?? ''}
           onChange={(e) => handleChange(field, e.target.value)}
         >
           {options.map((opt) => (

@@ -135,12 +135,14 @@ export const Cell = React.memo(({sheet, x, y, grid_visibility, height, table_inf
  
  if (cell_info.extra_border===true||cell_info.extra_border==='true') {
 
+   console.log(cell_info, cell_info_top, cell_info_left )
   
-  
-   if (!cell_info_top.extra_border)  cstyle.borderTop='1px solid black'
+   //if (!cell_info_top.extra_border)  cstyle.borderTop='1px solid black'
 
-   if (!cell_info_left.extra_border)  cstyle.borderLeft='1px solid black'
+   //if (!cell_info_left.extra_border)  cstyle.borderLeft='1px solid black'
 
+   if (!cell_info_top || !cell_info_top.extra_border || cell_info_top.extra_border==='false') cstyle.borderTop='1px solid black' 
+   if (!cell_info_left || !cell_info_left.extra_border || cell_info_left.extra_border==='false') cstyle.borderLeft='1px solid black'
 
    cstyle.borderBottom='1px solid black'
 
@@ -150,7 +152,39 @@ export const Cell = React.memo(({sheet, x, y, grid_visibility, height, table_inf
  }
 
  
+ if (cell_info.cell_horz==='center') {
+
+   cstyle.justifyContent = 'center';
+
+
+
+ }
+
+ else if (cell_info.cell_horz==='right') {
+
+   cstyle.justifyContent = 'right';
+
+
+
+ } else  cstyle.justifyContent = 'left';
+
  
+ if (cell_info.cell_vert==='top') {
+
+   cstyle.alignItems = 'start';
+
+
+
+ }
+
+ else if (cell_info.cell_vert==='center') {
+
+   cstyle.alignItems= 'center';
+
+
+
+ }
+ else cstyle.alignItems='end'
  
   //if (!is_selected) {
 
@@ -179,6 +213,7 @@ export const Cell = React.memo(({sheet, x, y, grid_visibility, height, table_inf
           onChange={(e) => {
             let span = document.createElement('span'); 
             span.style.font=cfont; 
+            span.style.backgroundColor=cell_info.bcolor.toString()+'FF';
             span.textContent=e.target.value; 
             document.body.appendChild(span); 
          
@@ -188,7 +223,7 @@ export const Cell = React.memo(({sheet, x, y, grid_visibility, height, table_inf
             onEditChange(e.target.value)}}
           onBlur={()=> dispatch(edit_mode_save({ sheet: sheet, x: x, y: y }))}
           onKeyDown={handleKeyDown}
-          style={{ fieldSizing:'content', zIndex:5001, height: '100%', border: 'none', width:'100%', outline: 'none', padding: '0 8px', font:cfont }}
+          style={{ fieldSizing:'content', backgroundColor:`${cell_info.bcolor.toString()+'FF'}`, zIndex:5001, height: '100%', border: 'none', width:'100%', outline: 'none', padding: '0 8px', font:`${cfont}` }}
         />
         
       </div>

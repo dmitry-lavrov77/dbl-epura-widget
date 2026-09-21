@@ -115,7 +115,7 @@ const loadTemplate = (template, the_list) => {
   //let table_list = [];
 
   let selected_sheet = 0;
-  let sheets = [{sheet:0, title:'Лист1', edited:false, grid_visibility:true,  table_selected:-1, table_pos:'', table_pres:''}];
+  let sheets = [{sheet:0, title:'Лист1', edited:false, grid_visibility:true,  table_selected:-1, table_pos:'', table_pos_old:false, table_pres:'', table_delta_x:0, table_delta_y:0}];
   let last_created_sheet = 0;
 
  
@@ -196,6 +196,8 @@ const loadTemplate = (template, the_list) => {
           sheets[i].table_pos = diags[_key].table.pos;
 
           sheets[i].table_pres = diags[_key].table.pres;
+
+          if (diags[_key].table.pos.trim()!=='') sheets[i].table_pos_old = true;
 
           
 
@@ -349,7 +351,7 @@ const loadTemplate = (template, the_list) => {
      tcells_in_range:cells_in_range,
      tselected_ranges:selected_ranges,
      selected_sheet:0,
-     sheets:[{sheet:0, title:'Лист1', edited:false, grid_visibility:true,  table_selected:-1, table_pos:'', table_pres:''}],
+     sheets:[{sheet:0, title:'Лист1', edited:false, grid_visibility:true,  table_selected:-1, table_pos:'', table_pres:'', table_pos_old:false, table_delta_x:0, table_delta_y:0}],
      last_created_sheet:0,
      selected_object:null,
 
@@ -555,7 +557,7 @@ const sheetSlice = createSlice({
      state.is_selecting = false,
          
      state.selected_sheet = state.last_created_sheet+1,
-     state.sheets.push({sheet:state.last_created_sheet+1, title:'Лист'+(state.last_created_sheet+2).toString(), edited:false, grid_visibility:true, table_selected:-1, table_pos:'', table_pres:''});
+     state.sheets.push({sheet:state.last_created_sheet+1, title:'Лист'+(state.last_created_sheet+2).toString(), edited:false, grid_visibility:true, table_selected:-1, table_pos:'', table_pos_old:false, table_pres:'',table_delta_x:0, table_delta_y:0});
      state.last_created_sheet++;
 
     },
