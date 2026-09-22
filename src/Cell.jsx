@@ -135,7 +135,7 @@ export const Cell = React.memo(({sheet, x, y, grid_visibility, height, table_inf
  
  if (cell_info.extra_border===true||cell_info.extra_border==='true') {
 
-   console.log(cell_info, cell_info_top, cell_info_left )
+  
   
    //if (!cell_info_top.extra_border)  cstyle.borderTop='1px solid black'
 

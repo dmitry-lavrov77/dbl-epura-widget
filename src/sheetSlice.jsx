@@ -669,6 +669,27 @@ const sheetSlice = createSlice({
     },
 
 
+      update_delta_x:(state, action)=>{
+
+
+      let the_sheet = state.sheets.find(o=>o.sheet === action.payload.sheet);
+      
+      the_sheet.table_delta_x = action.payload.pos
+      
+
+    },
+
+    update_delta_y:(state, action)=>{
+
+
+      let the_sheet = state.sheets.find(o=>o.sheet === action.payload.sheet);
+      
+      the_sheet.table_delta_y = action.payload.pos
+      
+
+    },
+
+
 
     update_table_pres:(state, action)=>{
 
@@ -679,6 +700,18 @@ const sheetSlice = createSlice({
       
 
     },
+
+
+    update_table_pos_mode:(state, action)=>{
+
+
+      let the_sheet = state.sheets.find(o=>o.sheet === action.payload.sheet);
+      
+      the_sheet.table_pos_old = action.payload.mode
+      
+
+    },
+
 
 
 
@@ -1791,7 +1824,14 @@ export const {
 
   update_table_pos,
 
+  update_delta_x,
+
+
+  update_delta_y,
+
   update_table_pres,
+
+  update_table_pos_mode,
 
 
   set_sheet_list,

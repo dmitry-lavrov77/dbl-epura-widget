@@ -58,6 +58,10 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
     let shift_y = 0;
     let good = true;
 
+  
+    
+    if (!sh.table_pos_old) good = false;
+
     // --- parse table position (e.g. "B$3") ---
     if (sh.table_pos.toString().trim() !== '') {
       const pos = sh.table_pos.split('$');
@@ -100,6 +104,33 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
       if (good) {
         tttArr[i].x = tttArr[i].x - min_x + 1 + shift_x;
         tttArr[i].y = tttArr[i].y - min_y + shift_y;
+      }  else {
+
+        if (!sh.table_pos_old) {
+
+          if (isNumeric(sh.table_delta_x.toString())&&parseFloat(sh.table_delta_x)){
+
+             tttArr[i].x = tttArr[i].x+parseFloat(sh.table_delta_x);
+            // if (tttArr[i].x<0) tttArr[i].x = 0;
+
+
+          } 
+
+
+          if (isNumeric(sh.table_delta_y.toString())&&parseFloat(sh.table_delta_y)){
+
+             tttArr[i].y = tttArr[i].y+parseFloat(sh.table_delta_y);
+            // if (tttArr[i].y<0) tttArr[i].y = 0;
+
+
+          } 
+
+
+
+        }
+
+
+
       }
       if (tablePres !== '') {
         let rrr = tttArr[i].value;
@@ -117,7 +148,7 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
     }
 
     return { ttt: tttArr, tableMap: map };
-  }, [table?.table_data, k, sh.table_pres, sh.table_pos]);
+  }, [table?.table_data, k, sh.table_pres, sh.table_pos,sh.table_pos_old,,sh.table_delta_x, sh.table_delta_y]);
 
 
 

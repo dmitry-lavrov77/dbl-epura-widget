@@ -254,7 +254,7 @@ export const ListProperties = () => {
 
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { update_grid_visibility, rename_sheet, set_sheet_list, update_table_pos, update_table_pres } from './sheetSlice';
+import { update_grid_visibility, rename_sheet, update_table_pos_mode,update_delta_x, update_delta_y, set_sheet_list, update_table_pos, update_table_pres } from './sheetSlice';
 import { useGetPlotListQuery } from './apiSlice';
 
 
@@ -397,6 +397,8 @@ export const ListProperties = () => {
 
   const selected = useSelector(state=>state.layout.selected_epura)
 
+  
+
   const plot_set = useGetPlotListQuery();
 
   const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
@@ -413,6 +415,14 @@ export const ListProperties = () => {
     if (field === 'table_pos')
       dispatch(update_table_pos({ sheet: active_sheet, pos: value }));
 
+    if (field ==='delta_x')
+      dispatch(update_delta_x({ sheet: active_sheet, pos: value }));
+
+
+    if (field ==='delta_y')
+      dispatch(update_delta_y({ sheet: active_sheet, pos: value }));
+
+
     if (field === 'table_pres')
       dispatch(update_table_pres({ sheet: active_sheet, pos: value }));
   };
@@ -424,7 +434,15 @@ export const ListProperties = () => {
   };
 
   // Position mode toggle
-  const [positionMode, setPositionMode] = useState('address');
+
+  
+
+  const position_mode = the_sheet.table_pos_old; //useSelector(state=>state.sheet.table_pos_old);
+
+  
+ console.log('THE SHEET', the_sheet)
+
+  //const [positionMode, setPositionMode] = useState('address');
 
   return (
     <div style={styles.container}>
@@ -486,25 +504,25 @@ export const ListProperties = () => {
             <button
               style={{
                 ...styles.toggleBtn,
-                ...(positionMode === 'address' ? styles.toggleBtnActive : {}),
+                ...(position_mode === true ? styles.toggleBtnActive : {}),
               }}
-              onClick={() => setPositionMode('address')}
+              onClick={() => {dispatch(update_table_pos_mode({sheet:active_sheet, mode:true}))}/*setPositionMode('address')*/}
             >
               Адрес ячейки
             </button>
             <button
               style={{
                 ...styles.toggleBtn,
-                ...(positionMode === 'offset' ? styles.toggleBtnActive : {}),
+                ...(position_mode === false ? styles.toggleBtnActive : {}),
               }}
-              onClick={() => setPositionMode('offset')}
+              onClick={() => {dispatch(update_table_pos_mode({sheet:active_sheet, mode:false}))}/*setPositionMode('offset')*/}
             >
               Смещение
             </button>
           </div>
 
           {/* Address mode */}
-          {positionMode === 'address' && (
+          {position_mode === true && (
             <div style={styles.inputRow}>
               <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
                 Позиция:
@@ -519,14 +537,15 @@ export const ListProperties = () => {
           )}
 
           {/* Offset mode */}
-          {positionMode === 'offset' && (
+          {position_mode === false && (
             <div style={styles.inputRow}>
               <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
                 Δx:
                 <input
                   type="number"
                   style={styles.numberInput}
-                  defaultValue={0}
+                  value = {the_sheet?.table_delta_x || ''}
+                  onChange={(e) => handleChange('delta_x', e.target.value)}
                 />
               </label>
               <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
@@ -534,7 +553,9 @@ export const ListProperties = () => {
                 <input
                   type="number"
                   style={styles.numberInput}
-                  defaultValue={0}
+                  value = {the_sheet?.table_delta_y || ''}
+                  onChange={(e) => handleChange('delta_y', e.target.value)}
+
                 />
               </label>
             </div>
