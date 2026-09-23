@@ -193,9 +193,9 @@ export const StatusBar = () => {
 
      }
 
-    let diags = [];
+   //DDD let diags = [];
 
-    let pics = [];  
+   //DDD let pics = [];  
 
     for (let shh=0;shh<tmpl.sheets.length;shh++) {
 
@@ -254,7 +254,7 @@ export const StatusBar = () => {
 
    
     
-    for (let ii=0;ii<=mxx;ii++) {
+    /*for (let ii=0;ii<=mxx;ii++) {
 
        let dd = diags_tmp.find(o=>o.idx===ii)
 
@@ -267,26 +267,31 @@ export const StatusBar = () => {
        else pics.push(pp) 
 
 
-    }
+    }*/
     
 
     for (let uu =0; uu<=mxx;uu++) {
 
+      let dd = diags_tmp.find(o => o.idx === uu)   // ← ADD
+      let pp = pics_tmp.find(o => o.idx === uu)     // ← ADD
+
+      if (pp === undefined && dd === undefined) continue; 
 
 
-      if (pics[uu]===null&&diags[uu]===null) continue;
+
+      if (pp===null&&dd===null) continue;
 
       let group = {pic:null, diag:null}
 
       
       
-      let _left = (pics[uu]&&pics[uu].lfle)?parseFloat(pics[uu].left):(diags[uu])?parseFloat(diags[uu].left):0;
+      let _left = (pp&&pp.lfle)?parseFloat(pp.left):(dd)?parseFloat(dd.left):0;
 
-      let _top = (pics[uu]&&pics[uu].lfle)?parseFloat(pics[uu].top):(diags[uu])?parseFloat(diags[uu].top):0;
+      let _top = (pp&&pp.lfle)?parseFloat(pp.top):(dd)?parseFloat(dd.top):0;
 
-      let _width = (pics[uu]&&pics[uu].lfle)?parseFloat(pics[uu].width):(diags[uu])?parseFloat(diags[uu].width):0;
+      let _width = (pp&&pp.lfle)?parseFloat(pp.width):(dd)?parseFloat(dd.width):0;
 
-      let _height = (pics[uu]&&pics[uu].lfle)?parseFloat(pics[uu].height):(diags[uu])?parseFloat(diags[uu].height):0;
+      let _height = (pp&&pp.lfle)?parseFloat(pp.height):(dd)?parseFloat(dd.height):0;
      
       let _x_left =0
 
@@ -348,23 +353,23 @@ export const StatusBar = () => {
       group.y_bottom_off = Math.round(_top+_height - 10 -(_y_bottom)*mx);
 
 
-      let pic0 = (pics[uu]&&pics[uu].lfle)?{
+      let pic0 = (pp&&pp.lfle)?{
 
-          left:parseFloat(pics[uu].left)+4,
+          left:parseFloat(pp.left)+4,
 
-          top:parseFloat(pics[uu].top)+20,
+          top:parseFloat(pp.top)+20,
   
-          width:parseFloat(pics[uu].width)-8,
+          width:parseFloat(pp.width)-8,
 
-          height:parseFloat(pics[uu].height)-20
+          height:parseFloat(pp.height)-20
   
            
   
-        }:(pics[uu])?{
+        }:(pp)?{
 
-          left:parseFloat(diags[uu].left)+4,
+          left:parseFloat(dd.left)+4,
 
-          top:parseFloat(diags[uu].top)+20,
+          top:parseFloat(dd.top)+20,
   
           width:10,
 
@@ -379,10 +384,7 @@ export const StatusBar = () => {
         //pic.svg = (contents!=='')? contents: this.app.sheets[0].pictures[uu].lfle
 
 
-      let svgData = (pics[uu]&&pics[uu].lfle)?pics[uu].lfle
-
-        :'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 1000 1000"></svg>'
-
+      
      
      
 
@@ -390,49 +392,37 @@ export const StatusBar = () => {
         //if ()
    
 
-     svgData ='data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData)
+     let svgData = (pp&&pp.lfle) ? pp.lfle
+        :'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 1000 1000"></svg>'
 
-     const encodedUri = encodeURIComponent(svgData);
+      svgData ='data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData)
+      const encodedUri = encodeURIComponent(svgData);
+      const latin1String = unescape(encodedUri);
+      const svgBase64 = svgData;
 
-     const latin1String = unescape(encodedUri);
+      var contents = ''
 
+      if (pp) {
+        let foreign = (pp.lfle.indexOf('foreignSVG')===-1)?false:true;
 
-     const svgBase64 = svgData;
+        if (foreign){
+          await loadImage(pp.width-8, pp.height-25,svgBase64);
+        }
 
-     
+        pic0.svg = (contents!=='')? contents: pp.lfle
+      }
 
-     var contents = ''
-
-       
-     let foreign = (pics[uu].lfle.indexOf('foreignSVG')===-1)?false:true;
-
-
-        
-//     let foreign = this.app.sheets[0].pictures[0].wo.body.querySelector('#foreignSVG');
-
-    
-    if (foreign){
-    
-  
-      await loadImage(pics[uu].width-8, pics[uu].height-25,svgBase64);
+      group.pic = pic0;
 
 
-    }
-
-
-
-       pic0.svg = (contents!=='')? contents: pics[uu].lfle
-
-
-        group.pic = pic0;
 
 
 
         let diag0 = { }
 
-       
+        console.log(dta)
 
-        let rrr = (dta?.epuraData?.data)?dta.epuraData.data.find(o=>o.diag_no === diags[uu].diagram_id):null;
+        let rrr = (dta?.epuraData?.data)?dta.epuraData.data.find(o=>o.diag_no === dd.diagram_id):null;
        
        
         let ttt = rrr;//diags[uu].data;
@@ -507,9 +497,9 @@ export const StatusBar = () => {
 
               
 
-              let mw = diags[uu].width; //this.app.sheets[0].diags[uu].wo.frame.style.minWidth;
+              let mw = dd.width; //this.app.sheets[0].diags[uu].wo.frame.style.minWidth;
 
-              let mh = diags[uu].height;//this.app.sheets[0].diags[uu].wo.frame.style.minHeight;
+              let mh = dd.height;//this.app.sheets[0].diags[uu].wo.frame.style.minHeight;
               
 
               //this.app.sheets[0].diags[uu].wo.frame.style.minWidth = this.app.sheets[0].diags[uu].wo.width +'px'
@@ -521,9 +511,9 @@ export const StatusBar = () => {
 
               //let wb = this.app.sheets[0].diags[uu].wo.frame.querySelector('.window-body');
 
-              let wbwidth = mw-diags[uu].cleft-diags[uu].cright;//wb.clientWidth;
+              let wbwidth = mw-dd.cleft-dd.cright;//wb.clientWidth;
 
-              let wbheight = mh-diags[uu].ctop-diags[uu].cbottom//wb.clientHeight;
+              let wbheight = mh-dd.ctop-dd.cbottom//wb.clientHeight;
 
                 
 
@@ -536,9 +526,9 @@ export const StatusBar = () => {
 
              
 
-              diag0.left=parseFloat(diags[uu].left)+4;
+              diag0.left=parseFloat(dd.left)+4;
 
-              diag0.top=parseFloat(diags[uu].top)+25;
+              diag0.top=parseFloat(dd.top)+25;
 
 
             
@@ -554,9 +544,9 @@ export const StatusBar = () => {
 
               if (lll) { 
 
-                diag0.frac_top = (diags[uu].ctop)/wbheight;
+                diag0.frac_top = (dd.ctop)/wbheight;
 
-                diag0.frac_bottom = (diags[uu].cbottom+20)/wbheight;
+                diag0.frac_bottom = (dd.cbottom+20)/wbheight;
 
                 let tmp = 1 - diag0.frac_top - diag0.frac_bottom;
 
@@ -566,23 +556,23 @@ export const StatusBar = () => {
 
 
 
-                diag0.frac_left =  (diags[uu].cleft+50)/wbwidth;
+                diag0.frac_left =  (dd.cleft+50)/wbwidth;
 
-                diag0.frac_right = (diags[uu].cright-8)/wbwidth;
+                diag0.frac_right = (dd.cright-8)/wbwidth;
 
                 diag0.frac_width = (1 - diag0.frac_left - diag0.frac_right)/1.1;
 
              
 
-                diag0.lgend = diags[uu].legend
+                diag0.lgend = dd.legend
 
               
             }  else  {
 
 
-              diag0.frac_top = (diags[uu].ctop)/wbheight;
+              diag0.frac_top = (dd.ctop)/wbheight;
 
-              diag0.frac_bottom = (diags[uu].cbottom+20)/wbheight;
+              diag0.frac_bottom = (dd.cbottom+20)/wbheight;
 
               let tmp = 1 - diag0.frac_top - diag0.frac_bottom;
 
@@ -592,15 +582,15 @@ export const StatusBar = () => {
 
 
 
-              diag0.frac_left =  (diags[uu].cleft + 50)/wbwidth;
+              diag0.frac_left =  (dd.cleft + 50)/wbwidth;
 
-              diag0.frac_right = (diags[uu].cright-8)/wbwidth;
+              diag0.frac_right = (dd.cright-8)/wbwidth;
 
               diag0.frac_width = (1 - diag0.frac_left - diag0.frac_right)/1.1;
 
              
 
-              diag0.lgend = diags[uu].legend
+              diag0.lgend = dd.legend
 
 
 
@@ -634,20 +624,17 @@ export const StatusBar = () => {
 
 
 
-              diag0.xaxmin = (diags[uu].axis_x_min.toString().trim()!=='')?parseFloat(diags[uu].axis_x_min):
-                           diags[uu].auto_x_min       
-
-              diag0.xaxmax  = (diags[uu].axis_x_max.toString().trim()!=='')?parseFloat(diags[uu].axis_x_max):
-                           diags[uu].auto_x_max
-
-              diag0.yaxmin = (diags[uu].axis_y_min.toString().trim()!=='')?parseFloat(diags[uu].axis_y_min):
-                           this.app.sheets[0].diags[uu].auto_y_min
-
-              diag0.yaxmax = (diags[uu].axis_y_max.toString().trim()!=='')?parseFloat(diags[uu].axis_y_max):
-                           this.app.sheets[0].diags[uu].auto_y_max
+              diag0.xaxmin = (dd.axis_x_min.toString().trim()!=='')?parseFloat(dd.axis_x_min):
+                        dd.auto_x_min       
+diag0.xaxmax  = (dd.axis_x_max.toString().trim()!=='')?parseFloat(dd.axis_x_max):
+                        dd.auto_x_max
+diag0.yaxmin = (dd.axis_y_min.toString().trim()!=='')?parseFloat(dd.axis_y_min):
+                        dd.auto_y_min
+diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
+                        dd.auto_y_max
 
 
-              diag0.axis_y_visibility = diags[uu].axis_y_visible            
+              diag0.axis_y_visibility = dd.axis_y_visible            
 
               
               //diag.xaxmin = diag.xaxmin - 0.05*(diag.xaxmax - diag.xaxmin) 
@@ -750,13 +737,125 @@ export const StatusBar = () => {
 
         let tcells = {};
 
-       
+        //console.log('SHEETS', tmpl.sheets)
+         //let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
 
         if (dta?.epuraData?.table_data) {
+    let sel = tmpl.sheets[shh].table_selected;
+    if (sel === -1 && dta.epuraData.lists?.length) {
+      sel = dta.epuraData.lists[0].idx;  // fall back to first available list
+    }
+    let raw = dta.epuraData.table_data.filter(o=>o.plist_no===sel)
+
+          //let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
+
+          if (raw){
+
+          let min_x = 100000;
+          let min_y = 100000;
+          let shift_x = 0;
+          let shift_y = 0;
+          let good = true;  
+          if (!tmpl.sheets[shh].table_pos_old) good = false;
+           if (tmpl.sheets[shh].table_pos.toString().trim() !== '') {
+              const pos = tmpl.sheets[shh].table_pos.split('$');
+              if (pos.length !== 2) good = false;
+        
+              if (good && (pos[0].length > 2 || pos[0].length === 0)) good = false;
+              if (good && (pos[0][0] < 'A' || pos[0][0] > 'Z')) good = false;
+              if (good && pos[0].length === 2 && (pos[0][1] < 'A' || pos[0][1] > 'Z')) good = false;
+        
+              if (good && parseFloat(pos[1]) >= 0) {
+                shift_x = getColumnIndex(pos[0]);
+                shift_y = parseFloat(pos[1]);
+              }
+            } else {
+              good = false;
+            }
+
+           if (good) {
+              for (let i = 0; i < raw.length; i++) {
+                //if (dta?.epuraData?.table_data[i].plist_no !== dta.epuraData.table_data[h].plist_no) continue;
+                if (raw[i].x < min_x) min_x = raw[i].x;
+                if (raw[i].y < min_y) min_y = raw[i].y;
+              }
+            }
+        
+            // --- filter, clone, transform ---
+            const tttArr = raw
+              .filter(o=>o.value !== null)
+              .map(o => ({ ...o }));
+        
+            const tablePres = tmpl.sheets[shh].table_pres.toString().trim();
+ 
+          
+           for (let h=0;h<tttArr.length;h++) {
+
+           
+
+           
+        
+              tttArr[h].x = tttArr[h].x-1
+        
+              tttArr[h].y = tttArr[h].y-1
+        
+              if (good) {
+                tttArr[h].x = tttArr[h].x - min_x + 1 + shift_x;
+                tttArr[h].y = tttArr[h].y - min_y + shift_y;
+              }  else {
+        
+                if (!tmpl.sheets[shh].table_pos_old) {
+        
+                  if (isNumeric(tmpl.sheets[shh].table_delta_x.toString())&&parseFloat(tmpl.sheets[shh].table_delta_x)){
+        
+                     tttArr[h].x = tttArr[h].x+parseFloat(tmpl.sheets[shh].table_delta_x);
+                    // if (tttArr[i].x<0) tttArr[i].x = 0;
+        
+        
+                  } 
+        
+        
+                  if (isNumeric(tmpl.sheets[shh].table_delta_y.toString())&&parseFloat(tmpl.sheets[shh].table_delta_y)){
+        
+                     tttArr[h].y = tttArr[h].y+parseFloat(tmpl.sheets[shh].table_delta_y);
+                    // if (tttArr[i].y<0) tttArr[i].y = 0;
+        
+        
+                  } 
+        
+        
+        
+                }
+        
+        
+        
+              }
+              if (tablePres !== '') {
+                let rrr = tttArr[h].value;
+                if (rrr.toString().trim() !== '' && isNumeric(rrr.toString())) {
+                  rrr = parseFloat(rrr).toFixed(parseFloat(tablePres)).toString();
+                }
+                tttArr[h].value = rrr;
+              }
+
+              tcells[tmpl.sheets[shh].sheet.toString()+'_'+tttArr[h].x.toString()+'_'+tttArr[h].y.toString()] = tttArr[h].value;
+
+
+
+
+            }
+          }
+        } 
+
+
+
+
+
+        /*if (dta?.epuraData?.table_data) {
 
           for (let h=0;h<dta.epuraData.table_data.length;h++) {
 
-           
+             console.log(dta.epuraData.table_data[h])
 
              let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
 
@@ -785,9 +884,137 @@ export const StatusBar = () => {
           }
 
 
-        }
+        }*/
        
-      
+       /*if (diags.length) {
+
+          
+    
+            
+
+          for (let i=0;i<diags.length;i++) {
+
+          // if (diags[i].sheet!==tmpl.sheets[shh].sheet) continue;
+         
+           let dg = diags[i];
+           
+           if (!dg.table_data) continue;
+
+          
+
+           //if (tmpl.sheets[shh].table_selected!==dg.data.diag_no) continue;
+
+           let td0 = Object.entries(dg.table_data)
+
+           let td = [];
+
+           for (let rr =0; rr<td0.length;rr++){
+              
+               let yy = td0[rr][0].split('_');
+
+               if (!yy.length||yy[0]!==tmpl.sheets[shh].table_selected.toString()) continue;
+
+               td.push(td0[rr]);
+
+
+           }
+
+           if (!td.length) continue;
+
+           let min_x =1000; let min_y =1000;
+
+           for  (let vv =0; vv<td.length;vv++) {
+              
+               let tmp = td[vv][0].split('_');
+               
+               if (parseFloat(tmp[1])<min_x) min_x = parseFloat(tmp[1]);
+               if (parseFloat(tmp[2])<min_y) min_y = parseFloat(tmp[2]);
+               
+
+
+           } 
+
+           for (let j =0; j<td.length;j++) {
+
+             if (!td[j][1]) continue;
+              
+             
+             let tmp = td[j][0].split('_');
+
+             let shift_x=0;
+
+             let shift_y=0;
+
+             let pos = tmpl.sheets[shh].table_pos.split('$')  //sheet.table_pos.split('$')
+
+             let good = true;
+
+             if (pos.length!==2) good = false;
+
+             if (good) {
+
+               if (pos[0].length>2||pos[0].length===0) good = false;
+
+             }
+
+            if (good) {
+
+             if (pos[0][0]<='A'||pos[0][0]>='Z') good = false;
+
+            }
+
+            if (good&&pos[0].length===2) {
+
+             if (pos[0][1]<='A'||pos[0][1]>='Z') good = false;
+
+           } 
+
+           if (good&&parseFloat(pos[1])>=0) {
+
+            shift_x = getColumnIndex(pos[0]); 
+                      
+            shift_y = parseFloat(pos[1]);
+
+
+           } else good = false;
+
+
+             if (good = false) {
+                 
+              min_x = 0;
+
+              min_y = 0;
+
+
+
+             }
+
+             if (shift_x!==0) shift_x = min_x-parseFloat(shift_x);
+            if (shift_y!==0) shift_y = min_y-parseFloat(shift_y)+1;
+
+            let rrr =  td[j][1];
+
+            if (tmpl.sheets[shh].table_pres.toString().trim()!=='') {
+                        
+             if (rrr&&rrr.toString().trim()!==''&&isNumeric(rrr.toString())) rrr=parseFloat(rrr).toFixed(parseFloat(tmpl.sheets[shh].table_pres)).toString();
+            }
+             
+
+             tcells[sheets[shh].sheet.toString()+'_'+(parseFloat(tmp[1])+shift_x).toString()+'_'+(parseFloat(tmp[2])+shift_y).toString()] = rrr;
+
+
+           }
+           
+           
+
+
+
+          }
+          
+
+       }*/
+
+       
       
   
        let tcc = Object.values(tmpl.tcells).filter(o=>o.sheet === sheet_idx).sort((a,b) => (a.y-b.y)||(a.x-b.x));
@@ -867,7 +1094,13 @@ export const StatusBar = () => {
     
    }
   
-     emaker.fix_rows()
+     //emaker.fix_rows()
+
+     for (let shh = 0; shh < tmpl.sheets.length; shh++) {
+       emaker.fix_rows(shh + 1);
+     }
+
+
 
      emaker.flush();
 

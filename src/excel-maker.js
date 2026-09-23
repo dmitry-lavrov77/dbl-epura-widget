@@ -958,25 +958,27 @@ export class ExcelMaker {
 
     fix_rows (sheet_no) {
 
+      //console.log(sheet_no)
+
      // return
      
 
-      let sd = this.sheets[1].node.querySelector("sheetData")
+      let sd = this.sheets[sheet_no].node.querySelector("sheetData")
 
      
 
       
 
-      let cols = this.sheets[1].node.createElement('cols', '')
+      let cols = this.sheets[sheet_no].node.createElement('cols', '')
 
       sd.before(cols);
 
-      for (let i=0;i<this.colss[0].length;i++){
+      for (let i=0;i<this.colss[sheet_no-1].length;i++){
    
-         let col = this.sheets[1].node.createElement('col', '')
+         let col = this.sheets[sheet_no].node.createElement('col', '')
          col.setAttribute('min', (i+1).toString())
          col.setAttribute('max', (i+1).toString())
-         col.setAttribute('width', (8.57*parseFloat(this.colss[0][i].width)/64).toString())
+         col.setAttribute('width', (8.57*parseFloat(this.colss[sheet_no-1][i].width)/64).toString())
          col.setAttribute('customWidth', "1")
          cols.appendChild(col);
 
@@ -994,16 +996,16 @@ export class ExcelMaker {
       
       }*/
 
-      for (let i =0; i<this.rowss[0].length;i++) {
+      for (let i =0; i<this.rowss[sheet_no-1].length;i++) {
 
-         if (this.rowss[0][i].height===20) {continue;}
+         if (this.rowss[sheet_no-1][i].height===20) {continue;}
 
 
           let row = sd.querySelector('row[r="'+(i+1).toString()+'"]')
           
           if (!row) {
 
-             row = this.sheets[1].node.createElement('row', '')
+             row = this.sheets[sheet_no].node.createElement('row', '')
 
              row.setAttribute('r', (i+1).toString())
 
@@ -1012,7 +1014,7 @@ export class ExcelMaker {
           }
 
        
-           row.setAttribute('ht',(15*(parseFloat(this.rowss[0][i].height))/20).toString())
+           row.setAttribute('ht',(15*(parseFloat(this.rowss[sheet_no-1][i].height))/20).toString())
 
            row.setAttribute('customHeight',"1");
 
@@ -1992,13 +1994,15 @@ excelColumnNameToNumber(columnName) {
      
      
      
-     for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y:2});
+    //DDD for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y:2});
+    if (!diag?.ser_names?.length) return;
+for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y:2});
 
      // for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i*2, y:2});
 
  
 
-        this.add_strings(0, ser_cells,diag.ser_names);
+       this.add_strings(0, ser_cells, diag.ser_names);///DDD this.add_strings(0, ser_cells,diag.ser_names);
 
 
 
@@ -2021,7 +2025,7 @@ excelColumnNameToNumber(columnName) {
            pts.push(diag.ppoints[i][j].x)
 
         }
-        this.add_numbers(0,ser_cells,pts);
+        this.add_numbers(0, ser_cells, pts);//DDDthis.add_numbers(0,ser_cells,pts);
         
       }
 
@@ -2043,7 +2047,7 @@ excelColumnNameToNumber(columnName) {
           pts.push(diag.ppoints[j][i].y)
 
         } 
-        this.add_numbers(0,ser_cells,pts);
+        this.add_numbers(0, ser_cells, pts);//DDDthis.add_numbers(0,ser_cells,pts);
 
       
       }
@@ -2095,7 +2099,10 @@ excelColumnNameToNumber(columnName) {
         let line = (diag.linestyles[i]!=='marker')?`<a:solidFill><a:srgbClr val="`+diag.colors[i]+`"/></a:solidFill>`:`<a:noFill/>`
 
 
+        //DDD<c:f>Лист0!$`+this.column_name(this.diag_left+i+2)+`$2</c:f>
+        
         chart_txt+=
+
 
         `<c:ser><c:idx val="`+i+`"/><c:order val="`+i+`"/><c:tx><c:strRef><c:f>Лист0!$`+this.column_name(this.diag_left+i+2)+`$2</c:f></c:strRef>
         </c:tx><c:spPr><a:ln w="19050" cap="rnd">${line}<a:prstDash val="`+linestyle+`"/><a:round/></a:ln><a:effectLst/>
@@ -2290,7 +2297,7 @@ excelColumnNameToNumber(columnName) {
         ts.appendChild(tt);
 
 
-         if (this.drawings[1].xml.indexOf('rId700003')!==-1) {
+         if (this.drawings[sheet_no].xml.indexOf('rId700003')!==-1) {
 
 
           let  tt= this.drawings_rels[sheet_no].node.createElement('Relationship', '');
@@ -2367,8 +2374,12 @@ excelColumnNameToNumber(columnName) {
 
       
 
-
         if (inside) {
+         let tmp = this.drawings[sheet_no].node.querySelectorAll("grpSp");
+         if (tmp.length > 0) node = tmp[tmp.length-1];
+        }
+
+        /*DDDif (inside) {
 
 
 
@@ -2380,7 +2391,7 @@ excelColumnNameToNumber(columnName) {
           node = tmp[tmp.length-1];
 
 
-        }
+        }*/
       
 
 
@@ -2615,10 +2626,11 @@ excelColumnNameToNumber(columnName) {
 
       if (pic) await this.add_pic(sheet_no, pic_no, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, pic);
 
-      if (diag) this.add_diag(sheet_no, 0, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, true); 
+      //DDDif (diag) this.add_diag(sheet_no, 0, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, true); 
 
      // (sheet_no, diag_no, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, inside=false)
 
+     if (diag) this.add_diag(sheet_no, 0, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, !!pic);
 
                 
     
@@ -2910,7 +2922,7 @@ excelColumnNameToNumber(columnName) {
 
         this.workbook.node.querySelector('sheets').firstChild.setAttribute('name', 'Лист0');
 
-        this.workbook.node.querySelector('sheets').firstChild.setAttribute('state', "veryHidden");
+       // this.workbook.node.querySelector('sheets').firstChild.setAttribute('state', "veryHidden");
 
         
 

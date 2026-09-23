@@ -108,7 +108,7 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
 
         if (!sh.table_pos_old) {
 
-          if (isNumeric(sh.table_delta_x.toString())&&parseFloat(sh.table_delta_x)){
+          if (sh?.table_delta_x&&isNumeric(sh.table_delta_x.toString())&&parseFloat(sh.table_delta_x)){
 
              tttArr[i].x = tttArr[i].x+parseFloat(sh.table_delta_x);
             // if (tttArr[i].x<0) tttArr[i].x = 0;
@@ -117,7 +117,7 @@ const Sheet = React.memo(({sheet = 0, handleColumnResizeStart, handleRowResizeSt
           } 
 
 
-          if (isNumeric(sh.table_delta_y.toString())&&parseFloat(sh.table_delta_y)){
+          if (sh?.table_delta_y&&isNumeric(sh.table_delta_y.toString())&&parseFloat(sh.table_delta_y)){
 
              tttArr[i].y = tttArr[i].y+parseFloat(sh.table_delta_y);
             // if (tttArr[i].y<0) tttArr[i].y = 0;
