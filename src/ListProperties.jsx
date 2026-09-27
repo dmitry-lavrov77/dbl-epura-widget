@@ -401,7 +401,7 @@ export const ListProperties = () => {
 
   const plot_set = useGetPlotListQuery();
 
-  const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
+  const the_list = (plot_set.data)?plot_set.data.filter(o=>parseFloat(o.plist_plot_no)===parseFloat(selected.plot_no)):[]
 
   the_list.unshift({plist_name:'не задана', plist_no:-1})
 
@@ -440,7 +440,7 @@ export const ListProperties = () => {
   const position_mode = the_sheet.table_pos_old; //useSelector(state=>state.sheet.table_pos_old);
 
   
- console.log('THE SHEET', the_sheet)
+ 
 
   //const [positionMode, setPositionMode] = useState('address');
 

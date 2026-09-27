@@ -171,7 +171,7 @@ const SilentPane = () =>{
 
    if (template.data&&plot_set.data) {
 
-    const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
+    const the_list = (plot_set.data)?plot_set.data.filter(o=>parseFloat(o.plist_plot_no)===parseFloat(selected.plot_no)):[]
 
    
       
@@ -279,7 +279,7 @@ const RightPane = () =>{
 
     if (template.data&&plot_set.data) {
 
-      const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
+      const the_list = (plot_set.data)?plot_set.data.filter(o=>parseFloat(o.plist_plot_no)===parseFloat(selected.plot_no)):[]
 
    
       
@@ -625,7 +625,7 @@ const EpuraWidget = ({ title, mode = 'edit' }) => {
 
     const do_scaffold = async () =>{  
       
-       console.log('SCAFFOLDING')
+      
 
        await scaffold();
 

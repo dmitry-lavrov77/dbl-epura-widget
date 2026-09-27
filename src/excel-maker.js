@@ -958,7 +958,7 @@ export class ExcelMaker {
 
     fix_rows (sheet_no) {
 
-      //console.log(sheet_no)
+      
 
      // return
      
@@ -1993,7 +1993,7 @@ excelColumnNameToNumber(columnName) {
 
      
      
-     
+     console.log('add_diag', { sheet_no, diag_no, inside, ser_names_length: diag?.ser_names?.length, ser_names: diag?.ser_names });
     //DDD for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y:2});
     if (!diag?.ser_names?.length) return;
 for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y:2});
@@ -2630,8 +2630,11 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
 
      // (sheet_no, diag_no, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, inside=false)
 
-     if (diag) this.add_diag(sheet_no, 0, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, !!pic);
-
+     if (diag) {
+      console.log('add_group calling add_diag', { sheet_no, has_pic: !!pic, inside: !!pic });
+      
+      this.add_diag(sheet_no, 0, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, !!pic);
+     }
                 
     
     }
@@ -2771,7 +2774,7 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
 
         for (let i=0; i<sheet.diags.length;i++) {
 
-       
+         
         
           this.add_diag(this.sheets.length-1,i,0, 0, 10, 0, 10, 0,  20, 0,sheet.diags[i]); 
         }
@@ -2814,7 +2817,7 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
 
 
         
-
+     console.log('THIS', this)
       
 
 
@@ -2922,7 +2925,7 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
 
         this.workbook.node.querySelector('sheets').firstChild.setAttribute('name', 'Лист0');
 
-       // this.workbook.node.querySelector('sheets').firstChild.setAttribute('state', "veryHidden");
+        this.workbook.node.querySelector('sheets').firstChild.setAttribute('state', "veryHidden");
 
         
 

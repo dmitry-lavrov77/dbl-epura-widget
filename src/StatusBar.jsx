@@ -420,11 +420,13 @@ export const StatusBar = () => {
 
         let diag0 = { }
 
-        console.log(dta)
+      
+        let rrr = (dta?.epuraData?.data)?dta.epuraData.data.find(o=>parseFloat(o.diag_no) === parseFloat(dd.diagram_id)):null;
+       
+       console.log('group diag lookup', { uu, dd_diagram_id: dd?.diagram_id, dta_diag_nos: dta?.epuraData?.data?.map(o=>o.diag_no), rrr });
 
-        let rrr = (dta?.epuraData?.data)?dta.epuraData.data.find(o=>o.diag_no === dd.diagram_id):null;
-       
-       
+        
+
         let ttt = rrr;//diags[uu].data;
 
 
@@ -626,11 +628,11 @@ export const StatusBar = () => {
 
               diag0.xaxmin = (dd.axis_x_min.toString().trim()!=='')?parseFloat(dd.axis_x_min):
                         dd.auto_x_min       
-diag0.xaxmax  = (dd.axis_x_max.toString().trim()!=='')?parseFloat(dd.axis_x_max):
+              diag0.xaxmax  = (dd.axis_x_max.toString().trim()!=='')?parseFloat(dd.axis_x_max):
                         dd.auto_x_max
-diag0.yaxmin = (dd.axis_y_min.toString().trim()!=='')?parseFloat(dd.axis_y_min):
+              diag0.yaxmin = (dd.axis_y_min.toString().trim()!=='')?parseFloat(dd.axis_y_min):
                         dd.auto_y_min
-diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
+              diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
                         dd.auto_y_max
 
 
@@ -737,7 +739,7 @@ diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
 
         let tcells = {};
 
-        //console.log('SHEETS', tmpl.sheets)
+        
          //let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
 
         if (dta?.epuraData?.table_data) {
@@ -745,7 +747,7 @@ diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
     if (sel === -1 && dta.epuraData.lists?.length) {
       sel = dta.epuraData.lists[0].idx;  // fall back to first available list
     }
-    let raw = dta.epuraData.table_data.filter(o=>o.plist_no===sel)
+    let raw = dta.epuraData.table_data.filter(o=>parseFloat(o.plist_no)===parseFloat(sel))
 
           //let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
 
@@ -806,7 +808,7 @@ diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
         
                 if (!tmpl.sheets[shh].table_pos_old) {
         
-                  if (isNumeric(tmpl.sheets[shh].table_delta_x.toString())&&parseFloat(tmpl.sheets[shh].table_delta_x)){
+                  if (tmpl.sheets[shh].table_delta_x&&isNumeric(tmpl.sheets[shh].table_delta_x.toString())&&parseFloat(tmpl.sheets[shh].table_delta_x)){
         
                      tttArr[h].x = tttArr[h].x+parseFloat(tmpl.sheets[shh].table_delta_x);
                     // if (tttArr[i].x<0) tttArr[i].x = 0;
@@ -815,7 +817,7 @@ diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
                   } 
         
         
-                  if (isNumeric(tmpl.sheets[shh].table_delta_y.toString())&&parseFloat(tmpl.sheets[shh].table_delta_y)){
+                  if (tmpl.sheets[shh].table_delta_y&&isNumeric(tmpl.sheets[shh].table_delta_y.toString())&&parseFloat(tmpl.sheets[shh].table_delta_y)){
         
                      tttArr[h].y = tttArr[h].y+parseFloat(tmpl.sheets[shh].table_delta_y);
                     // if (tttArr[i].y<0) tttArr[i].y = 0;
@@ -855,7 +857,7 @@ diag0.yaxmax = (dd.axis_y_max.toString().trim()!=='')?parseFloat(dd.axis_y_max):
 
           for (let h=0;h<dta.epuraData.table_data.length;h++) {
 
-             console.log(dta.epuraData.table_data[h])
+             
 
              let xx = tmpl.sheets.find (o=>parseFloat(o.table_selected)===dta.epuraData.table_data[h].plist_no)
 
