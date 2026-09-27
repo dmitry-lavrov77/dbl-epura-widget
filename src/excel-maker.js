@@ -784,14 +784,19 @@ const renderSVG = async (node,  vbx, vby, emu, idd, vbx0, vby0, picc) =>{
   
   }
   
-  const renderPreface_svg = (cellxmin, cellymin, cellxmax, cellymax, coll_off_min, coll_off_max, row_off_min, row_off_max, emu, idd) =>{
+  //const renderPreface_svg = (cellxmin, cellymin, cellxmax, cellymax, coll_off_min, coll_off_max, row_off_min, row_off_max, emu, idd) =>{
 
 
-    let cellxmin2 = (64*parseFloat(cellxmin)*9525+parseFloat(coll_off_min)).toString();
-    let cellymin2 = (23*parseFloat(cellymin)*9525+parseFloat(row_off_min)).toString();
+
+    const renderPreface_svg = (cellxmin, cellymin, cellxmax, cellymax, coll_off_min, coll_off_max, row_off_min, 
+      row_off_max, cellxmin2, cellymin2, cellxmax2, cellymax2, emu, idd) =>{
+
+
+    //let cellxmin2 = (64*parseFloat(cellxmin)*9525+parseFloat(coll_off_min)).toString();
+    //let cellymin2 = (23*parseFloat(cellymin)*9525+parseFloat(row_off_min)).toString();
     
-    let cellxmax2 = ((64*parseFloat(cellxmax)*9525+parseFloat(coll_off_max)) - parseFloat(cellxmin2)).toString();
-    let cellymax2 =( (23*parseFloat(cellymax)*9525+parseFloat(row_off_max)) - parseFloat(cellymin2)).toString();
+    //let cellxmax2 = ((64*parseFloat(cellxmax)*9525+parseFloat(coll_off_max)) - parseFloat(cellxmin2)).toString();
+    //let cellymax2 =( (23*parseFloat(cellymax)*9525+parseFloat(row_off_max)) - parseFloat(cellymin2)).toString();
 
     
    
@@ -973,12 +978,12 @@ export class ExcelMaker {
 
       sd.before(cols);
 
-      for (let i=0;i<this.colss[sheet_no-1].length;i++){
+      for (let i=0;i<this.cols[sheet_no-1].length;i++){
    
          let col = this.sheets[sheet_no].node.createElement('col', '')
          col.setAttribute('min', (i+1).toString())
          col.setAttribute('max', (i+1).toString())
-         col.setAttribute('width', (8.57*parseFloat(this.colss[sheet_no-1][i].width)/64).toString())
+         col.setAttribute('width', (8.57*parseFloat(this.cols[sheet_no-1][i].width)/64).toString())
          col.setAttribute('customWidth', "1")
          cols.appendChild(col);
 
@@ -996,9 +1001,9 @@ export class ExcelMaker {
       
       }*/
 
-      for (let i =0; i<this.rowss[sheet_no-1].length;i++) {
+      for (let i =0; i<this.rows[sheet_no-1].length;i++) {
 
-         if (this.rowss[sheet_no-1][i].height===20) {continue;}
+         if (this.rows[sheet_no-1][i].height===20) {continue;}
 
 
           let row = sd.querySelector('row[r="'+(i+1).toString()+'"]')
@@ -1014,7 +1019,7 @@ export class ExcelMaker {
           }
 
        
-           row.setAttribute('ht',(15*(parseFloat(this.rowss[sheet_no-1][i].height))/20).toString())
+           row.setAttribute('ht',(15*(parseFloat(this.rows[sheet_no-1][i].height))/20).toString())
 
            row.setAttribute('customHeight',"1");
 
@@ -1821,7 +1826,40 @@ excelColumnNameToNumber(columnName) {
 
          
         
-        res+=renderPreface_svg(x_left, y_top+1, x_right, y_bottom+1, 9525*x_left_off, 9525*x_right_off, 9525*y_top_off, 9525*y_bottom_off, emu, this.idd);
+       /// res+=renderPreface_svg(x_left, y_top+1, x_right, y_bottom+1, 9525*x_left_off, 9525*x_right_off, 9525*y_top_off, 9525*y_bottom_off, emu, this.idd);
+
+       
+let rows = this.rows[sheet_no-1];
+let cols = this.cols[sheet_no-1];
+
+let cellxmin2_emu = 0;
+for (let j = 0; j < x_left; j++) cellxmin2_emu += Math.round(9525 * parseFloat(cols[j].width));
+cellxmin2_emu += Math.round(9525 * x_left_off);
+
+let cellymin2_emu = 0;
+for (let j = 0; j < y_top + 1; j++) cellymin2_emu += Math.round(9525 * parseFloat(rows[j].height));
+cellymin2_emu += Math.round(9525 * y_top_off);
+
+let cellxmax2_emu = 0;
+for (let j = 0; j < x_right; j++) cellxmax2_emu += Math.round(9525 * parseFloat(cols[j].width));
+cellxmax2_emu += Math.round(9525 * x_right_off);
+cellxmax2_emu -= cellxmin2_emu;
+
+let cellymax2_emu = 0;
+for (let j = 0; j < y_bottom + 1; j++) cellymax2_emu += Math.round(9525 * parseFloat(rows[j].height));
+cellymax2_emu += Math.round(9525 * y_bottom_off);
+cellymax2_emu -= cellymin2_emu;
+
+res += renderPreface_svg(
+    x_left, y_top + 1, x_right, y_bottom + 1,
+    9525 * x_left_off, 9525 * x_right_off, 9525 * y_top_off, 9525 * y_bottom_off,
+    cellxmin2_emu.toString(),
+    cellymin2_emu.toString(),
+    cellxmax2_emu.toString(),
+    cellymax2_emu.toString(),
+    emu, this.idd
+);
+
 
       
 
@@ -2320,6 +2358,7 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
 
 
 
+let node;
       if (this.drawings[sheet_no]===null) {
 
 
@@ -2329,7 +2368,7 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
         path:'xl/drawings/drawing'+(sheet_no+1).toString()+'.xml',
 
           
-         xml:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+     /*    xml:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
          <xdr:twoCellAnchor><xdr:from><xdr:col>1</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>1</xdr:row>
          <xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>10</xdr:col><xdr:colOff>0</xdr:colOff>
@@ -2342,7 +2381,10 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
          <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
          r:id="rId`+this.pics_idd.toString()+`"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>
         `
-      
+      */
+     xml:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"></xdr:wsDr>
+        `
 
       
       
@@ -2364,12 +2406,13 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
         tt.setAttribute('ContentType', "application/vnd.openxmlformats-officedocument.drawing+xml");
 
         ts.appendChild(tt);
+        node = drawing.node.querySelector("wsDr");
 
       } else {
 
       
 
-        let node = this.drawings[sheet_no].node.querySelector("wsDr");
+node = this.drawings[sheet_no].node.querySelector("wsDr");
 
 
       
@@ -2379,184 +2422,72 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
          if (tmp.length > 0) node = tmp[tmp.length-1];
         }
 
-        /*DDDif (inside) {
+}
+
+      /*GGG === unified chart insertion (runs for first AND subsequent diagrams) === */
+      let ecx  = Math.round(9525*(diag.width));
+      let ecy  = Math.round(9525*(diag.height));
+      let ecx0 = Math.round(9525*(diag.left));
+      let ecy0 = Math.round(9525*(diag.top));
+      console.log('add_diag sizing', {
+  diag_left: diag.left,
+  diag_top: diag.top,
+  diag_width: diag.width,
+  diag_height: diag.height,
+  ecx, ecy, ecx0, ecy0,
+  y_top, y_bottom,
+  y_top_off, y_bottom_off,
+  x_left, x_right,
+  inside
+});
 
 
 
-   
+      let xml, xml1, xml2;
 
+      if (inside) {
+        xml = `<xdr:nvGraphicFramePr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><xdr:cNvPr id="`+this.idd.toString()+`" name="Диаграмма 1"><a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}"><a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{76ED6813-16EC-B184-A9BD-7C20DBD01544}"/></a:ext></a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr>`;
 
-          let tmp = this.drawings[sheet_no].node.querySelectorAll("grpSp");
+        //GGGxml1 = `<xdr:xfrm xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:off x="`+ecx0.toString()+`" y="`+ecy0.toString()+`"/><a:ext cx="`+ecx.toString()+`" cy="`+ecy.toString()+`"/></xdr:xfrm>`;
 
-          node = tmp[tmp.length-1];
-
-
-        }*/
-      
-
-
-        let xml = `<xdr:from><xdr:col>10</xdr:col><xdr:colOff>533400</xdr:colOff><xdr:row>14</xdr:row>
-         <xdr:rowOff>57150</xdr:rowOff></xdr:from><xdr:to><xdr:col>18</xdr:col><xdr:colOff>228600</xdr:colOff>
-         <xdr:row>28</xdr:row><xdr:rowOff>133350</xdr:rowOff></xdr:to>
-
-              
-
-
-         <xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="`+this.idd.toString()+`" name="Диаграмма 1">
-         <a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
-         <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{76ED6813-16EC-B184-A9BD-7C20DBD01544}"/></a:ext>
-         </a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm>
-         <a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
-         <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
-         r:id="rId`+this.pics_idd.toString()+`"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/>`;
-
-
-         let xml1 ='';
-
-         let xml2 ='';
-
-         if (inside) {
-
-
-      
-
-
-          //emu.cx =  64*9525*(x_right-x_left);
-    
-          //emu.cy =  mx*9525*(y_bottom-y_top+1);
-
-
-          const mx = (getTextWidth('12345678', '11pt Calibri').height>20)?getTextWidth('12345678', '11pt Calibri').height:20;
+       //xml1 = `<xdr:xfrm xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:off x="0" y="47625"/><a:ext cx="` + ecx.toString() + `" cy="` + ecy.toString() + `"/></xdr:xfrm>`;
 
        
-
-          /*let ecx =  Math.round(9525*(diag.width-46));
-    
-          let ecy =  Math.round(9525*(diag.height-25));
-
-          let ecx0 =  Math.round(9525*(diag.left+41));
-    
-          let ecy0 =  Math.round(9525*(diag.top+5));
-
-*/
-           let ecx =  Math.round(9525*(diag.width));
-    
-          let ecy =  Math.round(9525*(diag.height));
-
-          let ecx0 =  Math.round(9525*(diag.left));
-    
-          let ecy0 =  Math.round(9525*(diag.top));
+         xml1 = `<xdr:xfrm xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:off x="`+ecx0.toString()+`" y="`+ecy0.toString()+`"/><a:ext cx="`+ecx.toString()+`" cy="`+ecy.toString()+`"/></xdr:xfrm>`;
 
 
-
-
-
-
-
-          xml = `<xdr:nvGraphicFramePr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"  ><xdr:cNvPr   id="`+this.idd.toString()+`" name="Диаграмма 1"><a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
-          <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{76ED6813-16EC-B184-A9BD-7C20DBD01544}"/></a:ext>
-          </a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr>`;
-
-          xml1 = `<xdr:xfrm xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ><a:off x="`+ecx0.toString()+`" y="`+ecy0.toString()+`"/><a:ext cx="`+ecx.toString()+`" cy="`+ecy.toString()+`"/></xdr:xfrm>`;
-          
-          xml2 =`<a:graphic xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
-          <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
-          r:id="rId`+this.pics_idd.toString()+`"/></a:graphicData></a:graphic>`;
-
-
-        // }
-
-
-
-
-
-         let tmp =`<xdr:cNvPr id="`+this.idd.toString()+`" name="Диаграмма 1">
-          <a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
-          <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{76ED6813-16EC-B184-A9BD-7C20DBD01544}"/></a:ext>
-          </a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/>`
-          
-          //let ttt = document.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing',tmp);
-
- 
-
-         //dbl
-
-         let tmp1 = `<a:off x="`+ecx0.toString()+`" y="`+ecy0.toString()+`"/><a:ext cx="`+ecx.toString()+`" cy="`+ecy.toString()+`"/>`
-
-         let tmp2 =`<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
-          <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId`+this.pics_idd.toString()+`"/></a:graphicData>`
-
-          //ndnd = document.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing', 'xdr:nvGraphicFramePr')
-
-         //ndnd.innerHTML = tmp;
-
-         // ndnd1 = document.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing', 'xdr:xfrm')
-
-         //ndnd1.innerHTML = tmp1;
-
-          //ndnd2 = document.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing', 'a:graphic')
-
-         //ndnd2.innerHTML = tmp2;
-
-
-
-         } 
-
-         let ppp = new DOMParser().parseFromString(xml,'text/xml');
-    
-    
-         let rr = (!inside)?this.drawings[sheet_no].node.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing','xdr:twoCellAnchor')
-         :this.drawings[sheet_no].node.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing','xdr:graphicFrame');
-
-         if (inside) {
-
-    
-          
-          rr.setAttributeNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing','macro',"");
-
-          rr.innerHTML = xml;
-          rr.innerHTML+=xml1;
-          rr.innerHTML+=xml2;
-          //+xml2;
-
-          //rr.innerHTML+=xml1;
-
-          //rr.innerHTML+=xml2
-
-          //rr.appendChild(ndnd)
-
-          //rr.appendChild(ndnd1)
-
-          //rr.appendChild(ndnd2)
-
-          //ppp.firstChild.setAttribute('xmlns','http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing' )
-
-    //ppp.firstChild.setAttribute('xmlns:a','http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing' )
-         //let xx = new XMLSerializer().serializeToString()
-
+        xml2 = `<a:graphic xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId`+this.pics_idd.toString()+`"/></a:graphicData></a:graphic>`;
+      } else {
+        // standalone diagram — use actual cell coordinates for the anchor
+        /*GGGlet colOffFrom = Math.round(9525 * x_left_off);
+        let rowOffFrom = Math.round(9525 * y_top_off);
+        let colOffTo   = Math.round(9525 * x_right_off);
+        let rowOffTo   = Math.round(9525 * y_bottom_off);*/
         
+        let colOffFrom = Math.round(9525 *  x_left_off);
+        let rowOffFrom = Math.round(9525 *  y_top_off);
+        let colOffTo   = Math.round(9525 *  x_right_off);
+        let rowOffTo  = Math.round(9525 * y_bottom_off);
 
-          //rr.appendChild(ppp.firstChild)
-
-          //rr.appendChild(ppp.firstChild.nextSibling)
-
-          //rr.appendChild(ppp.firstChild.nextSibling.nextSibling)
-          
-
-
-         }
-
-         
-
-         //rr.innerHTML = xml;
-         
-         node.appendChild(rr);
-
-
-
-
-
+        //GGGxml = `<xdr:from><xdr:col>`+x_left+`</xdr:col><xdr:colOff>`+colOffFrom+`</xdr:colOff><xdr:row>`+(y_top+1)+`</xdr:row><xdr:rowOff>`+rowOffFrom+`</xdr:rowOff></xdr:from><xdr:to><xdr:col>`+x_right+`</xdr:col><xdr:colOff>`+colOffTo+`</xdr:colOff><xdr:row>`+(y_bottom+1)+`</xdr:row><xdr:rowOff>`+rowOffTo+`</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="`+this.idd.toString()+`" name="Диаграмма 1"><a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}"><a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{76ED6813-16EC-B184-A9BD-7C20DBD01544}"/></a:ext></a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="`+ecx0.toString()+`" y="`+ecy0.toString()+`"/><a:ext cx="`+ecx.toString()+`" cy="`+ecy.toString()+`"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId`+this.pics_idd.toString()+`"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/>`;
+        xml = `<xdr:from><xdr:col>`+x_left+`</xdr:col><xdr:colOff>`+colOffFrom+`</xdr:colOff><xdr:row>`+y_top+`</xdr:row><xdr:rowOff>`+rowOffFrom+`</xdr:rowOff></xdr:from><xdr:to><xdr:col>`+x_right+`</xdr:col><xdr:colOff>`+colOffTo+`</xdr:colOff><xdr:row>`+y_bottom+`</xdr:row><xdr:rowOff>`+rowOffTo+`</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="`+this.idd.toString()+`" name="Диаграмма 1"><a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}"><a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{76ED6813-16EC-B184-A9BD-7C20DBD01544}"/></a:ext></a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="`+ecx0.toString()+`" y="`+ecy0.toString()+`"/><a:ext cx="`+ecx.toString()+`" cy="`+ecy.toString()+`"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId`+this.pics_idd.toString()+`"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/>`;
+  
       }
+
+      let rr = (!inside)?this.drawings[sheet_no].node.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing','xdr:twoCellAnchor')
+      :this.drawings[sheet_no].node.createElementNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing','xdr:graphicFrame');
+
+      if (inside) {
+        rr.setAttributeNS('http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing','macro',"");
+        rr.innerHTML = xml;
+        rr.innerHTML+=xml1;
+        rr.innerHTML+=xml2;
+      } else {
+        rr.innerHTML = xml;
+      }
+
+      node.appendChild(rr);
+
 
 
 
@@ -2739,9 +2670,9 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
 
       this.sheets.push(new_sheet);
 
-      this.rowss.push(sheet.rows);
+      this.rows.push(sheet.rows);
 
-      this.colss.push(sheet.cols);
+      this.cols.push(sheet.cols);
 
    
        
@@ -2776,7 +2707,42 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
 
          
         
-          this.add_diag(this.sheets.length-1,i,0, 0, 10, 0, 10, 0,  20, 0,sheet.diags[i]); 
+          // Standalone diagram: derive real cell anchors from the diagram's pixel geometry,
+          // mirroring the group-coordinate calculation (StatusBar.coordinates).
+          let dd = sheet.diags[i];
+          let _left   = dd ? parseFloat(dd.left)   : 0;
+          let _top    = dd ? parseFloat(dd.top)    : 0;
+          let _width  = dd ? parseFloat(dd.width)  : 0;
+          let _height = dd ? parseFloat(dd.height) : 0;
+
+          let _x_left = 0;
+          let summ_left = 0, summ_left_prev = 0;
+          for (let ii=0; ii<(sheet.cols?sheet.cols.length:0); ii++) {
+            summ_left += parseFloat(sheet.cols[ii].width);
+            if (_left+4 < summ_left) break;
+            summ_left_prev += parseFloat(sheet.cols[ii].width);
+            _x_left++;
+          }
+
+          let _x_right = -1;
+          let summ_right = 0, summ_right_prev = 0;
+          for (let ii=0; ii<(sheet.cols?sheet.cols.length:0); ii++) {
+            summ_right += parseFloat(sheet.cols[ii].width);
+            if (_left+_width-8 < summ_right) break;
+            _x_right++;
+            summ_right_prev += parseFloat(sheet.cols[ii].width);
+          }
+
+          let mx = 20;
+          let _y_top = Math.floor((_top - 10)/mx);
+          let _y_bottom = Math.floor((_top+_height)/mx);
+
+          this.add_diag(this.sheets.length-1, i,
+            _x_left,  Math.round((_left+4) - summ_left_prev),
+            _y_top,   Math.round((_top - 10) - _y_top*mx),
+            _x_right, Math.round((_left+_width-8) - summ_right_prev),
+            _y_bottom-1, Math.round(_top+_height - 10 - _y_bottom*mx),
+            dd); 
         }
 
       }
@@ -2897,9 +2863,9 @@ for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y
         
         this.sheets = [_.cloneDeep(sheet_sample)];
 
-        this.rowss = [];
+        this.rows = [];
 
-        this.colss = [];
+        this.cols = [];
 
         add_node(this.sheets[0], this.parser);
 

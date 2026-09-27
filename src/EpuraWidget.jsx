@@ -418,7 +418,7 @@ const ObjectSettings = () => {
 
    return (
 
-    <div style={{display:'flex', flex:'1', flexDirection:'column', maxWidth:`${size+'%'}`, minWidth:`${size+'%'}`}} >
+    <div style={{display:'flex', flex:'1', flexDirection:'column', gap:'12px', maxWidth:`${size+'%'}`, minWidth:`${size+'%'}`, overflow:'hidden'}} >
 
 
      {(!selected_object)?<CellProperties></CellProperties>:(selected_object.tpe==='diag')?<DiagProperties></DiagProperties>:null}

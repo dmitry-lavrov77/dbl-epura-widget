@@ -371,7 +371,7 @@ const styles = {
   },
   numberInput: {
     flex: 1,
-    minWidth: 80,
+    minWidth: 0,
     padding: '5px 8px',
     border: '1px solid #d0d7de',
     borderRadius: 6,
@@ -382,7 +382,7 @@ const styles = {
   },
   inputRow: {
     display: 'flex',
-    gap: 10,
+    gap: 6,
     marginBottom: 12,
   },
 };
@@ -539,7 +539,7 @@ export const ListProperties = () => {
           {/* Offset mode */}
           {position_mode === false && (
             <div style={styles.inputRow}>
-              <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
+              <label style={{ ...styles.label, gap: 6, flex: 1, minWidth: 0 }}>
                 Δx:
                 <input
                   type="number"
@@ -548,7 +548,7 @@ export const ListProperties = () => {
                   onChange={(e) => handleChange('delta_x', e.target.value)}
                 />
               </label>
-              <label style={{ ...styles.label, ...styles.labelInput, flex: 1 }}>
+              <label style={{ ...styles.label, gap: 6, flex: 1, minWidth: 0 }}>
                 Δy:
                 <input
                   type="number"

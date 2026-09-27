@@ -278,6 +278,9 @@ export const StatusBar = () => {
       if (pp === undefined && dd === undefined) continue; 
 
 
+      console.log('DDD!!!!!', dd);
+
+
 
       if (pp===null&&dd===null) continue;
 
@@ -330,9 +333,9 @@ export const StatusBar = () => {
 
       } 
 
-      let mx = 20;
+     let mx = 20;
       
-      let _y_top = Math.floor((_top - 10)/mx)
+    /*  let _y_top = Math.floor((_top - 10)/mx)
   
       let _y_bottom = Math.floor((_top+_height)/mx);
 
@@ -350,7 +353,36 @@ export const StatusBar = () => {
   
       group.y_bottom = _y_bottom-1;
         
-      group.y_bottom_off = Math.round(_top+_height - 10 -(_y_bottom)*mx);
+      group.y_bottom_off = Math.round(_top+_height - 10 -(_y_bottom)*mx);*/
+      let _y_top = 0;
+let summ_top = 0;
+let summ_top_prev = 0;
+for (let jj = 0; jj < sheet.rows.length; jj++) {
+  summ_top += parseFloat(sheet.rows[jj].height);
+  if (_top - 10 < summ_top) break;
+  summ_top_prev += parseFloat(sheet.rows[jj].height);
+  _y_top++;
+}
+
+let _y_bottom = -1;
+let summ_bottom = 0;
+let summ_bottom_prev = 0;
+for (let jj = 0; jj < sheet.rows.length; jj++) {
+  summ_bottom += parseFloat(sheet.rows[jj].height);
+  if (_top + _height < summ_bottom) break;
+  summ_bottom_prev += parseFloat(sheet.rows[jj].height);
+  _y_bottom++;
+}
+
+group.x_left = _x_left;
+group.x_left_off = Math.round((_left + 4) - summ_left_prev);
+group.y_top = _y_top;
+group.y_top_off = Math.round((_top - 10) - summ_top_prev);
+group.x_right = _x_right;
+group.x_right_off = Math.round(((_left + _width - 8) - summ_right_prev));
+group.y_bottom = _y_bottom - 1;
+group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
+
 
 
       let pic0 = (pp&&pp.lfle)?{
