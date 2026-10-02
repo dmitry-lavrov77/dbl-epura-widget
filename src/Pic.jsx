@@ -196,6 +196,8 @@ const dispatch = useDispatch();
 
 
 
+
+
   // Finish dragging – dispatch final values to Redux store
   const onDragEnd = () => {
     if (!drag.current.active) return;
@@ -239,6 +241,191 @@ const dispatch = useDispatch();
   useEffect(() => {
     updateDom(pic_info.left, pic_info.top, pic_info.width, pic_info.height);
   }, [pic_info.left, pic_info.top, pic_info.width, pic_info.height, cscale]);
+
+
+
+    /*const load_file = async(contents, first_time = false, data_url = false) => {
+
+      let lfle = contents;
+
+      let iheight = 0;
+
+      let iwidth = 0;
+      
+      
+      if (data_url) {
+
+        const img = new Image();
+
+        img.src = contents;
+
+        await img.decode();
+
+        iheight = img.height
+
+        iwidth = img.width;
+        
+        contents = '<svg viewBox="0 0 '+iwidth+' '+iheight+'"><image  href="'+contents+'"></image></svg>'
+
+      }  
+
+
+      let body = picBody.current;
+      
+      body.innerHTML =  contents;
+
+      let wo_width = parseFloat(windowRef.current.style.minWidth);
+
+      let wo_height = parseFloat(windowRef.current.style.minHeight);
+
+      
+      if (data_url) {
+
+       //this.wo.width = iwidth+6;
+
+       //this.wo.frame.style.maxWidth=iwidth +6 +'px'; 
+       
+       //this.wo.frame.style.minWidth=iwidth+6+'px'
+
+
+       this.wo.height = iheight+23;
+
+       this.wo.frame.style.maxHeight=iheight +23 +'px'; this.wo.frame.style.minHeight=iheight+23+'px'
+
+       return;
+
+
+      }
+
+      
+ 
+      body.firstElementChild.setAttribute('width','100%');
+    
+      body.firstElementChild.setAttribute('height', '100%');
+
+
+
+
+
+      let w = this.wo.frame.firstElementChild.getAttribute('width')
+
+      let h = this.wo.frame.firstElementChild.getAttribute('height')
+
+      
+
+      body.firstElementChild.style.cursor='crosshair'
+
+      body.firstElementChild.onclick = (e)=>this.set_point(e,body.firstElementChild);
+
+
+
+      let view_box_on = body.firstElementChild.getAttribute('viewBox');
+
+      body.firstElementChild.setAttribute('preserveAspectRatio', 'none');
+
+      if (first_time && contents.indexOf('WhipToSVG_minx')===-1) {
+
+           let g = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+           g.id = 'foreignSVG';
+           let desc = document.createElementNS("http://www.w3.org/2000/svg", 'desc');
+           desc.innerText='foreign SVG';
+           g.appendChild(desc)
+           body.firstElementChild.insertBefore(g, body.firstElementChild.firstElementChild)
+           
+           let ind0 = lfle.indexOf('<svg');
+
+           let ind = lfle.indexOf('>', ind0);
+
+           lfle = lfle.slice(0, ind + 1) + '<g id="foreignSVG"></g>' + lfle.slice(ind + 1);
+
+
+     }
+
+
+     if (first_time ) {  
+    
+      if (view_box_on) {
+
+ 
+
+    
+      const viewBox =  body.firstElementChild.getAttribute('viewBox').split(/\s+|,/);
+ 
+    
+      let probable_height = (this.wo.width-6)*parseFloat(viewBox[3])/parseFloat(viewBox[2]);
+
+      if (probable_height<=(this.wo.height-23)) {this.wo.height = probable_height+23; this.wo.frame.style.maxHeight= probable_height+23+'px'; this.wo.frame.style.minHeight= probable_height+23+'px'} 
+ 
+      else {
+ 
+       let probable_width = (this.wo.height-23)*parseFloat(viewBox[2])/parseFloat(viewBox[3]);
+ 
+       if (probable_width<=(this.wo.width-6)) {this.wo.width = probable_width+6; this.wo.frame.style.maxWidth=probable_width + 6 +'px'; this.wo.frame.style.minWidth=probable_width + 6 +'px'} 
+   
+      }
+ 
+    
+   }
+   else {
+
+
+    if (w&&h) {
+
+       body.firstElementChild.setAttribute('viewBox','0 0 '+w+' '+h);
+
+       let probable_height = (this.wo.width-6)*parseFloat(h)/parseFloat(w);
+ 
+       if (probable_height<=(this.wo.height-23)) { this.wo.height = probable_height + 23; this.wo.frame.style.height= probable_height + 23 +'px'} 
+   
+       else {
+   
+        let probable_width = (this.wo.height-23)*parseFloat(w)/parseFloat(h);
+   
+        if (probable_width<=this.wo.width-6) {this.wo.width = probable_width +6; this.wo.frame.style.width=probable_width+6+'px'} 
+     
+       }
+
+
+     }
+    
+
+    }
+
+   } 
+    
+
+   }*/
+
+
+
+
+  /*const finput_change = () =>{
+
+      if (!finput.current) return;
+
+      var file = finput.current.files[0];
+
+      if (file) {
+
+         
+         var reader = new FileReader();
+
+         if (file.name.indexOf('.png')!==-1||file.name.indexOf('.jpeg')!==-1||file.name.indexOf('.jpg')!==-1) {
+          reader.readAsDataURL(file);
+        
+          reader.onload = (evt) => load_file(evt.target.result, true, true)
+
+        }
+         else {
+          reader.readAsText(file, "UTF-8");
+         
+          reader.onload = (evt) => load_file(evt.target.result, true)
+
+         }
+
+        }
+
+     }*/
 
 
 
@@ -348,6 +535,8 @@ const topRightResizeStyle = {
 
    
 
+   const finput = useRef(null);
+
     return (
 
      
@@ -366,12 +555,18 @@ const topRightResizeStyle = {
         <div style={topLeftResizeStyle} />
         <div style={topRightResizeStyle} />
 
-        <div  style={toolbarStyle}>
+        <div  style={toolbarStyle} onClick={()=>{if(finput.current) finput.current.click()}}>
           <div
             title="Загрузить подложку"
-            
             style={uploaderStyle}
-          > <FontAwesomeIcon icon={faUpload} /></div>
+          > <FontAwesomeIcon icon={faUpload}/>
+          
+            <input ref={finput} type='file' accept='.svg, .jpg, .png' style={{display:'none'}}></input>
+
+          
+          
+          
+          </div>
         </div>
         
       </div>}
