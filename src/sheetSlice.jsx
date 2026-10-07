@@ -799,6 +799,20 @@ const sheetSlice = createSlice({
     },
     
     
+   update_pic_lfle:(state, action)=>{
+
+       let key = action.payload.sheet.toString()+'_'+action.payload.idx.toString();
+
+       console.log('!!!!!!!!!!!!!',action.payload.lfle)
+
+       state.pics[key].lfle = action.payload.lfle;
+
+       //state.pics[key].top = action.payload.top;
+
+    },
+    
+
+
     update_pic_size:(state, action)=>{
 
         let key = action.payload.sheet.toString()+'_'+action.payload.idx.toString();
@@ -1811,6 +1825,9 @@ export const {
   update_diag_position,
 
   update_pic_position,
+  
+  update_pic_lfle,
+  
 
   update_cell_property,
 

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
-import {select_object, get_pic_info, move_link, update_pic_size, update_pic_position} from './sheetSlice'
+import {select_object, get_pic_info, move_link, update_pic_size, update_pic_position, update_pic_lfle} from './sheetSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import {useRef, useEffect} from 'react'
 
@@ -31,6 +31,8 @@ const dispatch = useDispatch();
 
 
     if (picBody.current) {
+
+      console.log('HERE')
 
       if (pic_info.lfle===null) picBody.current.innerHTML='';
       else {
@@ -244,7 +246,10 @@ const dispatch = useDispatch();
 
 
 
-    /*const load_file = async(contents, first_time = false, data_url = false) => {
+    const save_object = useRef(null)
+
+
+    const load_file = async(sheet, idx, contents, first_time = false, data_url = false) => {
 
       let lfle = contents;
 
@@ -274,28 +279,72 @@ const dispatch = useDispatch();
       
       body.innerHTML =  contents;
 
-      let wo_width = parseFloat(windowRef.current.style.minWidth);
+      //windowRef.current.style.width = iwidth +6;
+      //windowRef.current.style.width = iwidth +6;
+      
+      
+      //let wo_width = parseFloat(windowRef.current.style.minWidth);
 
-      let wo_height = parseFloat(windowRef.current.style.minHeight);
+      //let wo_height = parseFloat(windowRef.current.style.minHeight);
 
       
       if (data_url) {
 
-       //this.wo.width = iwidth+6;
+       console.log('data_url!!!!') 
+
+       windowRef.current.style.width = iwidth +6 + 'px';
+      
+       windowRef.current.style.height = iheight +23 + 'px';
+      
 
        //this.wo.frame.style.maxWidth=iwidth +6 +'px'; 
        
        //this.wo.frame.style.minWidth=iwidth+6+'px'
 
 
-       this.wo.height = iheight+23;
+       //this.wo.height = iheight+23;
 
-       this.wo.frame.style.maxHeight=iheight +23 +'px'; this.wo.frame.style.minHeight=iheight+23+'px'
+       //this.wo.frame.style.maxHeight=iheight +23 +'px'; this.wo.frame.style.minHeight=iheight+23+'px'
+
+
+       save_object.current = {
+
+        width:iwidth,
+        
+        height:iheight,
+
+        //left:parseFloat(windowRef.current.style.left),
+
+        //top:parseFloat(windowRef.current.style.top),
+        
+        lfle:contents
+        
+
+
+
+      }
+
+      console.log(save_object.current)
+
+       if (save_object.current) {
+
+          dispatch(update_pic_lfle({ sheet, idx,  lfle: save_object.current.lfle}));   
+         
+          dispatch(update_pic_size({ sheet, idx, width:  save_object.current.width/cscale, height:  save_object.current.height/cscale  }));
+    
+          //dispatch(update_pic_position({ sheet, idx,  left: save_object.current.left/cscale, top: save_object.current.top/cscale }));
+        }
+
+
+
+
 
        return;
 
 
       }
+
+      console.log('no data_url!!!!')
 
       
  
@@ -304,18 +353,18 @@ const dispatch = useDispatch();
       body.firstElementChild.setAttribute('height', '100%');
 
 
+      body.firstElementChild.setAttribute('preserveAspectRatio', 'none');
 
 
+      let w = body.firstElementChild.clientWidth
 
-      let w = this.wo.frame.firstElementChild.getAttribute('width')
-
-      let h = this.wo.frame.firstElementChild.getAttribute('height')
+      let h = body.firstElementChild.clientHeight
 
       
 
-      body.firstElementChild.style.cursor='crosshair'
+      //body.firstElementChild.style.cursor='crosshair'
 
-      body.firstElementChild.onclick = (e)=>this.set_point(e,body.firstElementChild);
+      //body.firstElementChild.onclick = (e)=>this.set_point(e,body.firstElementChild);
 
 
 
@@ -323,7 +372,7 @@ const dispatch = useDispatch();
 
       body.firstElementChild.setAttribute('preserveAspectRatio', 'none');
 
-      if (first_time && contents.indexOf('WhipToSVG_minx')===-1) {
+      if (contents.indexOf('WhipToSVG_minx')===-1) {
 
            let g = document.createElementNS("http://www.w3.org/2000/svg", 'g');
            g.id = 'foreignSVG';
@@ -342,46 +391,94 @@ const dispatch = useDispatch();
      }
 
 
-     if (first_time ) {  
+     if (true ) {  
     
       if (view_box_on) {
 
+      console.log('pt1')  
  
 
     
       const viewBox =  body.firstElementChild.getAttribute('viewBox').split(/\s+|,/);
- 
-    
-      let probable_height = (this.wo.width-6)*parseFloat(viewBox[3])/parseFloat(viewBox[2]);
 
-      if (probable_height<=(this.wo.height-23)) {this.wo.height = probable_height+23; this.wo.frame.style.maxHeight= probable_height+23+'px'; this.wo.frame.style.minHeight= probable_height+23+'px'} 
+      console.log('viewBox', viewBox)
  
-      else {
- 
-       let probable_width = (this.wo.height-23)*parseFloat(viewBox[2])/parseFloat(viewBox[3]);
- 
-       if (probable_width<=(this.wo.width-6)) {this.wo.width = probable_width+6; this.wo.frame.style.maxWidth=probable_width + 6 +'px'; this.wo.frame.style.minWidth=probable_width + 6 +'px'} 
-   
+      windowRef.current.style.width = 300*cscale+'px';
+
+      windowRef.current.style.height = (300*cscale-23)*parseFloat(viewBox[3])/parseFloat(viewBox[2])+6+'px';
+
+
+      save_object.current = {
+
+        width:300*cscale,
+        
+        height:(300*cscale-23)*parseFloat(viewBox[3])/parseFloat(viewBox[2])+6,
+
+        left:parseFloat(windowRef.current.style.left),
+
+        top:parseFloat(windowRef.current.style.top),
+        
+        lfle:body.innerHTML
+        
+
+
+
       }
+
+      console.log(save_object.current)
+
+       if (save_object.current) {
+
+          dispatch(update_pic_lfle({ sheet, idx,  lfle: save_object.current.lfle}));   
+         
+          dispatch(update_pic_size({ sheet, idx, width:  save_object.current.width/cscale, height:  save_object.current.height/cscale  }));
+    
+          dispatch(update_pic_position({ sheet, idx,  left: save_object.current.left/cscale, top: save_object.current.top/cscale }));
+        }
+
+
+    
+     // let probable_height = (parseFloat(windowRef.current.style.width)-6)*parseFloat(viewBox[3])/parseFloat(viewBox[2]);
+
+     // console.log('probable_height', probable_height)
+
+     // if (probable_height<=(parseFloat(windowRef.current.style.height)-23)) {windowRef.current.style.height= probable_height+23+'px'; } 
+ 
+     // else {
+
+     //  console.log('pt1.1') 
+ 
+     //  let probable_width = (parseFloat(windowRef.current.style.width)-23)*parseFloat(viewBox[2])/parseFloat(viewBox[3]);
+
+     //  console.log('probable_width',probable_width)
+ 
+     //  if (probable_width<=(parseFloat(windowRef.current.style.width)-6)) {console.log('yes');windowRef.current.style.width = probable_width+6 + 'px'; } 
+   
+     // }
  
     
    }
+  }
    else {
 
 
     if (w&&h) {
 
+      console.log('pt2')
+
        body.firstElementChild.setAttribute('viewBox','0 0 '+w+' '+h);
 
-       let probable_height = (this.wo.width-6)*parseFloat(h)/parseFloat(w);
+       let probable_height = (parseFloat(windowRef.current.style.width)-6)*parseFloat(h)/parseFloat(w);
  
-       if (probable_height<=(this.wo.height-23)) { this.wo.height = probable_height + 23; this.wo.frame.style.height= probable_height + 23 +'px'} 
+       if (probable_height<=(parseFloat(windowRef.current.style.height)-23)) { windowRef.current.style.height = probable_height + 23 + 'px'; } 
    
        else {
+
+        console.log('pt3')
    
-        let probable_width = (this.wo.height-23)*parseFloat(w)/parseFloat(h);
+        let probable_width = (parseFloat(windowRef.current.style.height)-23)*parseFloat(w)/parseFloat(h);
    
-        if (probable_width<=this.wo.width-6) {this.wo.width = probable_width +6; this.wo.frame.style.width=probable_width+6+'px'} 
+        if (probable_width<=parseFloat(windowRef.current.style.width)-6) {windowRef.current.style.width=probable_width+6+'px'} 
      
        }
 
@@ -391,17 +488,19 @@ const dispatch = useDispatch();
 
     }
 
-   } 
+   
     
 
-   }*/
+   }
 
 
 
 
-  /*const finput_change = () =>{
+  const finput_change = async (sheet, idx) =>{
 
       if (!finput.current) return;
+
+      save_object.current = null
 
       var file = finput.current.files[0];
 
@@ -413,19 +512,24 @@ const dispatch = useDispatch();
          if (file.name.indexOf('.png')!==-1||file.name.indexOf('.jpeg')!==-1||file.name.indexOf('.jpg')!==-1) {
           reader.readAsDataURL(file);
         
-          reader.onload = (evt) => load_file(evt.target.result, true, true)
+          reader.onload = (evt) => load_file(sheet, idx, evt.target.result, true, true)
 
         }
          else {
           reader.readAsText(file, "UTF-8");
          
-          reader.onload = (evt) => load_file(evt.target.result, true)
+          reader.onload = (evt) => load_file(sheet, idx, evt.target.result, true)
 
          }
 
         }
 
-     }*/
+       
+     
+
+
+
+      }
 
 
 
@@ -561,7 +665,7 @@ const topRightResizeStyle = {
             style={uploaderStyle}
           > <FontAwesomeIcon icon={faUpload}/>
           
-            <input ref={finput} type='file' accept='.svg, .jpg, .png' style={{display:'none'}}></input>
+            <input onChange={()=>finput_change(sheet, idx)} ref={finput} type='file' accept='.svg, .jpg, .png' style={{display:'none'}}></input>
 
           
           
