@@ -803,7 +803,7 @@ const sheetSlice = createSlice({
 
        let key = action.payload.sheet.toString()+'_'+action.payload.idx.toString();
 
-       console.log('!!!!!!!!!!!!!',action.payload.lfle)
+       
 
        state.pics[key].lfle = action.payload.lfle;
 

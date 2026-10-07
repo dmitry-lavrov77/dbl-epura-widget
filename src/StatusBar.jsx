@@ -278,7 +278,7 @@ export const StatusBar = () => {
       if (pp === undefined && dd === undefined) continue; 
 
 
-      console.log('DDD!!!!!', dd);
+      
 
 
 
@@ -455,8 +455,7 @@ group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
       
         let rrr = (dta?.epuraData?.data)?dta.epuraData.data.find(o=>parseFloat(o.diag_no) === parseFloat(dd.diagram_id)):null;
        
-       console.log('group diag lookup', { uu, dd_diagram_id: dd?.diagram_id, dta_diag_nos: dta?.epuraData?.data?.map(o=>o.diag_no), rrr });
-
+       
         
 
         let ttt = rrr;//diags[uu].data;

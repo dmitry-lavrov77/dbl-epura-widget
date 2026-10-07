@@ -2031,7 +2031,6 @@ res += renderPreface_svg(
 
      
      
-     console.log('add_diag', { sheet_no, diag_no, inside, ser_names_length: diag?.ser_names?.length, ser_names: diag?.ser_names });
     //DDD for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y:2});
     if (!diag?.ser_names?.length) return;
 for(let i=0;i<diag.ser_names.length;i++) ser_cells.push({x:this.diag_left+3+i, y:2});
@@ -2429,17 +2428,7 @@ node = this.drawings[sheet_no].node.querySelector("wsDr");
       let ecy  = Math.round(9525*(diag.height));
       let ecx0 = Math.round(9525*(diag.left));
       let ecy0 = Math.round(9525*(diag.top));
-      console.log('add_diag sizing', {
-  diag_left: diag.left,
-  diag_top: diag.top,
-  diag_width: diag.width,
-  diag_height: diag.height,
-  ecx, ecy, ecx0, ecy0,
-  y_top, y_bottom,
-  y_top_off, y_bottom_off,
-  x_left, x_right,
-  inside
-});
+     
 
 
 
@@ -2562,7 +2551,6 @@ node = this.drawings[sheet_no].node.querySelector("wsDr");
      // (sheet_no, diag_no, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, inside=false)
 
      if (diag) {
-      console.log('add_group calling add_diag', { sheet_no, has_pic: !!pic, inside: !!pic });
       
       this.add_diag(sheet_no, 0, x_left, x_left_off, y_top, y_top_off, x_right, x_right_off, y_bottom, y_bottom_off, diag, !!pic);
      }
@@ -2783,7 +2771,6 @@ node = this.drawings[sheet_no].node.querySelector("wsDr");
 
 
         
-     console.log('THIS', this)
       
 
 

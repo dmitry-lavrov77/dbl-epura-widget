@@ -32,7 +32,7 @@ const dispatch = useDispatch();
 
     if (picBody.current) {
 
-      console.log('HERE')
+      
 
       if (pic_info.lfle===null) picBody.current.innerHTML='';
       else {
@@ -290,7 +290,7 @@ const dispatch = useDispatch();
       
       if (data_url) {
 
-       console.log('data_url!!!!') 
+     
 
        windowRef.current.style.width = iwidth +6 + 'px';
       
@@ -324,7 +324,6 @@ const dispatch = useDispatch();
 
       }
 
-      console.log(save_object.current)
 
        if (save_object.current) {
 
@@ -344,7 +343,7 @@ const dispatch = useDispatch();
 
       }
 
-      console.log('no data_url!!!!')
+      
 
       
  
@@ -395,13 +394,13 @@ const dispatch = useDispatch();
     
       if (view_box_on) {
 
-      console.log('pt1')  
+        
  
 
     
       const viewBox =  body.firstElementChild.getAttribute('viewBox').split(/\s+|,/);
 
-      console.log('viewBox', viewBox)
+      
  
       windowRef.current.style.width = 300*cscale+'px';
 
@@ -425,7 +424,7 @@ const dispatch = useDispatch();
 
       }
 
-      console.log(save_object.current)
+      
 
        if (save_object.current) {
 
@@ -464,7 +463,7 @@ const dispatch = useDispatch();
 
     if (w&&h) {
 
-      console.log('pt2')
+     
 
        body.firstElementChild.setAttribute('viewBox','0 0 '+w+' '+h);
 
@@ -474,7 +473,7 @@ const dispatch = useDispatch();
    
        else {
 
-        console.log('pt3')
+        
    
         let probable_width = (parseFloat(windowRef.current.style.height)-23)*parseFloat(w)/parseFloat(h);
    
