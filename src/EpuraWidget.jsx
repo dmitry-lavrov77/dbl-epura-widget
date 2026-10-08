@@ -41,7 +41,12 @@ const EpuraListItem = ({plot_name, plot_no, select_epura}) =>{
 
 const DateListItem = ({value, caption, max}) =>{
 
-  const [isChecked, setChecked] = useState(false)
+  const s_d= useSelector(state=>state.layout.dates_selected)
+  
+
+  const isChecked = (s_d.indexOf(value)!==-1)
+
+  //const [isChecked, setChecked] = useState(false)
 
   const ref = useRef(null)
 
@@ -73,7 +78,7 @@ const DateListItem = ({value, caption, max}) =>{
      
     dispatch(toggle_date({toggle:e.target.checked, value:e.target.value})) 
 
-    setChecked (e.target.checked)  
+    //setChecked (e.target.checked)  
 
 
 
@@ -103,6 +108,12 @@ const DateList = () =>{
    //const dates_selected = useSelector(state=>state.layout.dates_selected)
 
    const dates = useGetEpuraDatesQuery((selected)?selected.plot_no:null)
+
+   //const mode = useSelector(state=>state.layout.layout_mode)
+
+   //console.log(selected);
+
+
 
   // const limit_on = (selected.plot_qnt_date === dates_selected.length)
 
@@ -166,6 +177,69 @@ const SilentPane = () =>{
 
   const plot_set = useGetPlotListQuery();
 
+   const plot_set2 = useGetPlotSetQuery();
+
+  const dates = useSelector(state => state.layout.dates_selected)
+
+  const plot_data = useGetEpuraDataQuery({plot_no:selected.plot_no, dates:dates.toString()});
+
+  const plot_table = useGetEpuraTableQuery({plot_no:selected.plot_no, dates:dates.toString()});
+
+  const diagram_list = useGetDiagramListQuery();
+   
+  const plot_line = useGetPlotLineQuery();
+
+  useEffect(()=>{
+
+
+     console.log('EFFECT!!!!!!!!!!!!!!!!!!!!!!!')
+
+     const load = async() =>{
+  
+
+         //const the_list = (plot_set.data)?plot_set.data.filter(o=>o.plist_plot_no===selected.plot_no):[]
+              
+         let res = await load_data(selected.plot_no,plot_data.data,plot_table.data,plot_line.data,diagram_list.data, plot_set2.data);
+  
+         dispatch(setEpuraData(res))
+                
+         
+
+        
+  
+          
+      //    if (diag_info.diagram_id==-1) dispatch(set_diag_data({sheet:sheet, idx:idx, data:null, table_data:null}))
+         
+  
+      //    else {
+           
+      //      let iii = res.data.findIndex(o=>o.diag_no===parseFloat(diag_info.diagram_id));
+  
+            
+  
+      //      if (iii!==-1&&iii<res.data.length) {
+           
+              
+              
+       //       dispatch(set_diag_data({sheet:sheet, idx:idx, data:res.data[iii], table_data:(res.table_data[0])?res.table_data:null}))
+          
+       //     }
+          
+       //   }
+      
+          
+    }
+
+
+
+    if (dates&&dates.length&&plot_data.data&&plot_table.data&&plot_set2.data&&diagram_list.data&&plot_line.data) load()  
+    else  dispatch(setEpuraData(null))       
+
+
+  }, [dates, plot_data, selected, plot_table,plot_line,diagram_list, plot_set2] )
+
+  
+
   
    useEffect(()=>{
 
@@ -227,6 +301,8 @@ const RightPane = () =>{
 
   useEffect(()=>{
 
+
+     console.log('EFFECT!!!!!!!!!!!!!!!!!!!!!!!')
 
      const load = async() =>{
   

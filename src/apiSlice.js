@@ -280,35 +280,8 @@ getEpuraData: builder.query({
   },
 }),
 
-/*
- getEpuraTable: builder.query({
- 
 
-    query: ({plot_no, dates}) => `CalcPlotTable.sql?PlotNo=${plot_no}&PlotDates='${dates}'`,
-
-    async onQueryStarted(args, { dispatch, queryFulfilled }) {
-    // Перед запросом — включаем спиннер
-    dispatch(update_spinner_status(true));
-
-    try {
-      await queryFulfilled;
-      // После успешного завершения — выключаем спиннер
-      dispatch(update_spinner_status(false));
-    } catch (error) {
-      // В случае ошибки — тоже выключаем
-      dispatch(update_spinner_status(false));
-      // При необходимости можно обработать ошибку дополнительно
-      console.error('Ошибка сохранения:', error);
-    }
-  },
-
- 
-
-     
-
-  }),*/
-
-  getEpuraTable: builder.query({
+  /*getEpuraTable: builder.query({
   query: ({ plot_no, dates } = {}) =>
     plot_no != null && dates?.length
       ? { url: `CalcPlotTable.sql?PlotNo=${plot_no}&PlotDates='${dates}'` }
@@ -324,8 +297,33 @@ getEpuraData: builder.query({
       dispatch(update_spinner_status(false));
     }
   },
-}),
+}),*/
 
+
+
+
+ getEpuraTable: builder.query({
+  query: ( arg ) => {
+
+    if (!arg || !arg.plot_no || !arg.dates || arg.dates.length === 0) {
+      return skipToken;
+    }
+    return `CalcPlotTable.sql?PlotNo=${arg.plot_no}&PlotDates='${arg.dates}''`;
+
+
+  },
+    
+  async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    dispatch(update_spinner_status(true));
+    try {
+      await queryFulfilled;
+    } catch (error) {
+      console.error('Ошибка получения данных:', error);
+    } finally {
+      dispatch(update_spinner_status(false));
+    }
+  },
+}),
    
 
 
