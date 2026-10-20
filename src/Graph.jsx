@@ -724,7 +724,8 @@ export const Graph = ({sheet, idx, data, mainSVG, ref}) =>{
                       :item.map((point, index)=>{
 
 
-                        let ppllx = (params.x_min<params.x_max)?point.x:(params.x_min+params.x_max - point.x) 
+                        let pplx = (params.x_min<params.x_max)?point.x:(params.x_min+params.x_max - point.x) 
+                         
                          
 
                         return (<line key={index} strokeWidth={'8'} 
