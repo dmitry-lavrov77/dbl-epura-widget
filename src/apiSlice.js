@@ -6,7 +6,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 
 const dynamicBaseQuery = async (args, api, extraOptions) => {
   const state = api.getState();
-  const baseUrl = (state.config.baseUrl)?state.config.baseUrl:'./';
+  const baseUrl = (state.config.baseUrl)?state.config.baseUrl:'';
 
 
 
