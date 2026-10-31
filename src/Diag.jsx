@@ -1184,12 +1184,12 @@ const bottomEdgeResizeStyle = {
 
 
       </div>}
-      <div ref={diagBody} style={{backgroundColor: 'transparent',  position: 'absolute', top:'21px', left:'4px', right:'4px', bottom:'4px'}}>
+      <div ref={diagBody} style={{backgroundColor: 'transparent',  position: 'absolute', top:`${21*cscale}px`, left:`${4*cscale}px`, right:`${4*cscale}px`, bottom:`${4*cscale}px`}}>
 
          {diag_info.legend.show&&diag_info.data&&<Legend position={diag_info.legend.pos} legends={diag_info.data.legends} colors={diag_info.data.colors} linestyles={diag_info.data.linestyles}></Legend>}  
          {(ddata0?.data)?
 
-            <div  ref={ref} style={{position: 'absolute', left:`${diag_info.cleft+'px'}`, right:`${diag_info.cright+'px'}`, top:`${diag_info.ctop+'px'}`, bottom:`${diag_info.cbottom+'px'}`, border: `${(layout_mode==='edit')?'1px solid gray':'none'}`,
+            <div  ref={ref} style={{position: 'absolute', left:`${diag_info.cleft*cscale+'px'}`, right:`${diag_info.cright*cscale+'px'}`, top:`${diag_info.ctop*cscale+'px'}`, bottom:`${diag_info.cbottom*cscale+'px'}`, border: `${(layout_mode==='edit')?'1px solid gray':'none'}`,
             display: 'flex', flexDirection: 'row'}}>
 
            

@@ -673,7 +673,7 @@ const topRightResizeStyle = {
         </div>
         
       </div>}
-      <div ref={picBody} style={{backgroundColor: 'white',  position: 'absolute', top:'21px', left:'4px', right:'4px', bottom:'4px'}}>
+      <div ref={picBody} style={{backgroundColor: 'white',  position: 'absolute', top:`${21*cscale}px`, left:`${4*cscale}px`, right:`${4*cscale}px`, bottom:`${4*cscale}px`}}>
 
       </div>
     </div>

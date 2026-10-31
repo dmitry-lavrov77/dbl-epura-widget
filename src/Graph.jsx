@@ -348,6 +348,8 @@ export const Graph = ({sheet, idx, data, mainSVG, ref}) =>{
 
   const layout_mode = useSelector(state=>state.layout.layout_mode)
 
+  const cscale = useSelector(state=>state.layout.cscale)
+
 
 
 
@@ -603,7 +605,7 @@ export const Graph = ({sheet, idx, data, mainSVG, ref}) =>{
 
        {(!params)?null:<>
 
-         <div style={{flex:'1', minWidth: '50px', maxWidth: '50px', maxHeight: `calc(100% - ${(text_height+10).toString()}px)`, position: 'relative'}}>
+         <div style={{flex:'1', minWidth: `${50*cscale}px`, maxWidth: `${50*cscale}px`, maxHeight: `calc(100% - ${((text_height+10)*cscale).toString()}px)`, position: 'relative'}}>
 
           
            <svg ref = {yRef} preserveAspectRatio="none" width="100%" height="100%"  viewBox={vbb1}>
@@ -807,7 +809,7 @@ export const Graph = ({sheet, idx, data, mainSVG, ref}) =>{
             
 
 
-         <div  style={{flex:'1', maxHeight:`${(text_height+10).toString()+'px'}`, minHeight:`${(text_height+10).toString()+'px'}`, position:'relative'}}>
+         <div  style={{flex:'1', maxHeight:`${((text_height+10)*cscale).toString()+'px'}`, minHeight:`${((text_height+10)*cscale).toString()+'px'}`, position:'relative'}}>
             
            <svg ref={xRef} preserveAspectRatio="none" width="100%" height="100%" viewBox={vbb2}>
 

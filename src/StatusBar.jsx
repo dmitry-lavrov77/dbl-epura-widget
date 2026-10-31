@@ -10,6 +10,7 @@ import {useSaveEpuraMutation} from './apiSlice'
 import { ExcelMaker } from './excel-maker';
 import { TOTAL_COLS } from './consts';
 import { getColumnIndex,isNumeric } from './formula';
+import { measureText } from './graph_math';
 //import {} from 
 
 
@@ -389,11 +390,11 @@ group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
 
           left:parseFloat(pp.left)+4,
 
-          top:parseFloat(pp.top)+20,
+          top:parseFloat(pp.top)+21,
   
           width:parseFloat(pp.width)-8,
 
-          height:parseFloat(pp.height)-20
+          height:parseFloat(pp.height)-25
   
            
   
@@ -544,9 +545,6 @@ group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
 
               //let wb = this.app.sheets[0].diags[uu].wo.frame.querySelector('.window-body');
 
-              let wbwidth = mw-dd.cleft-dd.cright;//wb.clientWidth;
-
-              let wbheight = mh-dd.ctop-dd.cbottom//wb.clientHeight;
 
                 
 
@@ -561,25 +559,27 @@ group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
 
               diag0.left=parseFloat(dd.left)+4;
 
-              diag0.top=parseFloat(dd.top)+25;
+              diag0.top=parseFloat(dd.top)+21;
 
 
             
 
 
   
-              diag0.width= wbwidth - 8 
+              diag0.width= parseFloat(dd.width) - 8 
 
-              diag0.height= wbheight - 8 
+              diag0.height= parseFloat(dd.height) - 25 
 
            
+              const xlabel_h = measureText(document.body, 'Calibri', '9', '0').height + 10;
+
               let lll = true;
 
               if (lll) { 
 
-                diag0.frac_top = (dd.ctop)/wbheight;
+                diag0.frac_top = (dd.ctop)/diag0.height;
 
-                diag0.frac_bottom = (dd.cbottom+20)/wbheight;
+                diag0.frac_bottom = (dd.cbottom + xlabel_h)/diag0.height;
 
                 let tmp = 1 - diag0.frac_top - diag0.frac_bottom;
 
@@ -589,9 +589,9 @@ group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
 
 
 
-                diag0.frac_left =  (dd.cleft+50)/wbwidth;
+                diag0.frac_left =  (dd.cleft+50)/diag0.width;
 
-                diag0.frac_right = (dd.cright-8)/wbwidth;
+                diag0.frac_right = (dd.cright)/diag0.width;
 
                 diag0.frac_width = (1 - diag0.frac_left - diag0.frac_right)/1.1;
 
@@ -603,9 +603,9 @@ group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
             }  else  {
 
 
-              diag0.frac_top = (dd.ctop)/wbheight;
+              diag0.frac_top = (dd.ctop)/diag0.height;
 
-              diag0.frac_bottom = (dd.cbottom+20)/wbheight;
+              diag0.frac_bottom = (dd.cbottom + xlabel_h)/diag0.height;
 
               let tmp = 1 - diag0.frac_top - diag0.frac_bottom;
 
@@ -615,9 +615,9 @@ group.y_bottom_off = Math.round((_top + _height - 10) - summ_bottom_prev);
 
 
 
-              diag0.frac_left =  (dd.cleft + 50)/wbwidth;
+              diag0.frac_left =  (dd.cleft + 50)/diag0.width;
 
-              diag0.frac_right = (dd.cright-8)/wbwidth;
+              diag0.frac_right = (dd.cright)/diag0.width;
 
               diag0.frac_width = (1 - diag0.frac_left - diag0.frac_right)/1.1;
 
